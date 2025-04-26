@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const formElements = document.querySelectorAll('.form-group, .brand, h2, .subtitle');
 
-
   const styleEl = document.createElement('style');
   styleEl.textContent = `
     @keyframes fadeInUp {
@@ -209,16 +208,51 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const createAccountBtn = document.querySelector('.create-account-btn');
-const loginInfo = document.querySelector('.login-info');
+  const loginInfo = document.querySelector('.login-info');
 
-if (createAccountBtn && loginInfo) {
-  createAccountBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    loginInfo.classList.add('swipe-left'); 
+  if (createAccountBtn && loginInfo) {
+    createAccountBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginInfo.classList.add('swipe-left'); 
 
-    setTimeout(() => {
-      window.location.href = createAccountBtn.href; 
-    }, 500); 
-  });
-}
+      setTimeout(() => {
+        window.location.href = createAccountBtn.href; 
+      }, 500); 
+    });
+  }
+
+  // Login functionality
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/accounts/login/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('access_token', data.access);
+          localStorage.setItem('refresh_token', data.refresh);
+          alert('Login successful!');
+          window.location.href = '../dashboard/dashboard.html';
+        } else {
+          const errorData = await response.json();
+          alert('Login failed: ' + (errorData.detail || 'Invalid credentials'));
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred. Please try again.');
+      }
+    });
+  }
 });

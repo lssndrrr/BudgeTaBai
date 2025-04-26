@@ -345,7 +345,6 @@ input[type="checkbox"]:checked::after {
   opacity: 1;
 }
 
-/* Divider */
 .divider {
   display: flex;
   align-items: center;
@@ -496,15 +495,12 @@ input.valid {
   }
 }
 
-.login-info.swipe-left {
-  animation: swipeLeft 0.5s forwards;
-}
-
+.login-info.swipe-left,
 .login-info.swipe-right {
-  animation: swipeRight 0.5s forwards;
+  animation-duration: 0.6s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
 }
-
-/* Responsive Design */
 @media (min-width: 768px) {
   .login-info {
     display: block;

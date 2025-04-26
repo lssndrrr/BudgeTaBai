@@ -17,6 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const togglePasswordBtn = document.querySelector('.toggle-password');
   const signupBtn = document.querySelector('.btn-signup');
 
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+    .fadeInUp { animation: fadeInUp 0.5s ease forwards; }
+    .fadeIn { animation: fadeIn 0.5s ease forwards; }
+    .pulse { animation: pulse 0.3s ease; }
+    .btn-signup.success { background-color: var(--color-success-500); }
+    input:focus { transform: scale(1.01); }
+    .btn-signup:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(51, 102, 255, 0.2); }
+    .toggle-password:active i { transform: rotate(180deg); transition: transform 0.3s ease; }
+  `;
+  document.head.appendChild(style);
+
   // Validation Functions
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidPassword = (password) => password.length >= 8;
@@ -58,6 +73,55 @@ document.addEventListener('DOMContentLoaded', () => {
     inputs.password.classList.add('pulse');
     setTimeout(() => inputs.password.classList.remove('pulse'), 300);
   });
+
+  document.querySelectorAll('.form-group, .brand, h2, .subtitle').forEach((el, i) => {
+    setTimeout(() => el.classList.add('fadeInUp'), i * 100);
+  });
+  document.querySelectorAll('.login-prompt').forEach((el, i) => {
+    setTimeout(() => el.classList.add('fadeIn'), 500 + i * 100);
+  });
+
+  // Button Click Pulse
+  document.querySelectorAll('button, input, a').forEach(el => {
+    el.addEventListener('mousedown', () => {
+      el.classList.add('pulse');
+      setTimeout(() => el.classList.remove('pulse'), 300);
+    });
+  });
+
+  // Parallax Circles
+  if (window.innerWidth >= 768) {
+    const signupInfo = document.querySelector('.signup-info');
+    if (signupInfo) {
+      const design = document.createElement('div');
+      design.className = 'design-elements';
+      design.innerHTML = `
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+      `;
+      signupInfo.appendChild(design);
+      
+      const circleStyle = document.createElement('style');
+      circleStyle.textContent = `
+        .signup-info { position: relative; overflow: hidden; }
+        .design-elements { position: absolute; inset: 0; z-index: 1; }
+        .circle { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.1); }
+        .circle-1 { width: 300px; height: 300px; bottom: -100px; right: -100px; }
+        .circle-2 { width: 200px; height: 200px; top: 10%; left: -50px; }
+        .circle-3 { width: 150px; height: 150px; top: 50%; right: 30%; background: rgba(255, 184, 0, 0.15); }
+      `;
+      document.head.appendChild(circleStyle);
+
+      document.addEventListener('mousemove', e => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        document.querySelector('.circle-1').style.transform = `translate(${x * 30}px, ${y * -30}px)`;
+        document.querySelector('.circle-2').style.transform = `translate(${x * -20}px, ${y * 20}px)`;
+        document.querySelector('.circle-3').style.transform = `translate(${x * 15}px, ${y * -15}px)`;
+      });
+    }
+  }
 
   // Form Submit
   signupForm.addEventListener('submit', async (e) => {

@@ -365,12 +365,11 @@
     }
   }
   
-  .signup-info.swipe-left {
-    animation: swipeLeft 0.5s forwards;
-  }
-  
+  .signup-info.swipe-left,
   .signup-info.swipe-right {
-    animation: swipeRight 0.5s forwards;
+    animation-duration: 0.6s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
   }
 
   .signup-info.swiped-left {

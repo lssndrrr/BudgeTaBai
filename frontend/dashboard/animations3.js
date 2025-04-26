@@ -637,4 +637,195 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
+
+    let entries = [
+        { id: 1, type: 'expense', title: 'Grocery Shopping', amount: 85.40, category: 'food', date: 'June 15, 2025', notes: 'Weekly groceries' },
+        { id: 2, type: 'expense', title: 'Uber Ride', amount: 24.50, category: 'travel', date: 'June 14, 2025', notes: 'To office' },
+        { id: 3, type: 'income', title: 'Salary', amount: 5000.00, category: 'other', date: 'June 1, 2025', notes: 'Monthly salary' }
+      ];
+  
+      function showEntryDetails(entry) {
+        const detailsModal = document.getElementById('entryDetailsModal');
+        if (!detailsModal) return;
+  
+        document.getElementById('detailType').textContent = entry.type.charAt(0).toUpperCase() + entry.type.slice(1);
+        document.getElementById('detailTitle').textContent = entry.title;
+        document.getElementById('detailAmount').textContent = formatCurrency(entry.amount);
+        document.getElementById('detailCategory').textContent = entry.category.charAt(0).toUpperCase() + entry.category.slice(1);
+        document.getElementById('detailDate').textContent = entry.date;
+        document.getElementById('detailNotes').textContent = entry.notes || 'No notes';
+  
+        detailsModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+  
+      // Add click event listeners to expense items
+      document.querySelectorAll('.expense-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = parseInt(item.dataset.id);
+          const entry = entries.find(e => e.id === id);
+          if (entry) {
+            showEntryDetails(entry);
+          }
+        });
+      });
+  
+      // Close details modal
+      document.querySelectorAll('#entryDetailsModal .close-modal, #entryDetailsModal .close-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('entryDetailsModal').classList.remove('show');
+          document.body.style.overflow = '';
+        });
+      });
+  
+      function updateTotals() {
+        const totalIncome = entries
+          .filter(entry => entry.type === 'income')
+          .reduce((sum, entry) => sum + entry.amount, 0);
+  
+        const totalExpenses = entries
+          .filter(entry => entry.type === 'expense')
+          .reduce((sum, entry) => sum + entry.amount, 0);
+  
+        const remainingBalance = totalIncome - totalExpenses;
+  
+        document.querySelector('.budget-amount').textContent = formatCurrency(totalIncome);
+        document.querySelector('.total-expenses').textContent = `${formatCurrency(totalExpenses)} Total Expenses`;
+        document.querySelector('.remaining-balance').textContent = `${formatCurrency(remainingBalance)} Remaining Balance`;
+      }
+  
+      // Modify your existing addExpense function
+      function addEntry(entryData) {
+        const newId = entries.length > 0 ? Math.max(...entries.map(entry => entry.id)) + 1 : 1;
+        
+        const newEntry = {
+          id: newId,
+          type: entryData.type,
+          title: entryData.title,
+          amount: parseFloat(entryData.amount),
+          category: entryData.category,
+          date: formatDate(new Date(entryData.date)),
+          notes: entryData.notes
+        };
+        
+        entries.unshift(newEntry);
+        
+        if (newEntry.type === 'expense') {
+          renderNewExpense(newEntry);
+        }
+        
+        updateTotals();
+        closeModal();
+      }
+  
+      // Update your form submission handler
+      if (expenseForm) {
+        expenseForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          
+          const formData = {
+            type: document.getElementById('entryType').value,
+            title: document.getElementById('expenseTitle').value,
+            amount: document.getElementById('expenseAmount').value,
+            category: document.getElementById('expenseCategory').value,
+            date: document.getElementById('expenseDate').value,
+            notes: document.getElementById('expenseNotes').value
+          };
+          
+          addEntry(formData);
+          expenseForm.reset();
+          
+          if (expenseDateInput) {
+            expenseDateInput.value = new Date().toISOString().substring(0, 10);
+          }
+        });
+      }
+      updateTotals();
+      init();
+
+    // Add event listeners for edit and delete buttons
+    function setupEditAndDeleteListeners() {
+        document.querySelectorAll('.expense-edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent triggering the entry details modal
+                const expenseItem = e.target.closest('.expense-item');
+                if (expenseItem) {
+                    const id = parseInt(expenseItem.dataset.id);
+                    const entry = entries.find(e => e.id === id);
+                    if (entry) {
+                        populateEditForm(entry);
+                        openModal(editExpenseModal);
+                    }
+                }
+            });
+        });
+    
+        document.querySelectorAll('.expense-delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent triggering the entry details modal
+                const expenseItem = e.target.closest('.expense-item');
+                if (expenseItem) {
+                    const id = parseInt(expenseItem.dataset.id);
+                    deleteEntry(id);
+                }
+            });
+        });
+    }
+    
+    // Populate the edit form with entry data
+    function populateEditForm(entry) {
+        document.getElementById('editExpenseId').value = entry.id;
+        document.getElementById('editExpenseTitle').value = entry.title;
+        document.getElementById('editExpenseAmount').value = entry.amount;
+        document.getElementById('editExpenseCategory').value = entry.category;
+        document.getElementById('editExpenseDate').value = new Date(entry.date).toISOString().substring(0, 10);
+        document.getElementById('editExpenseNotes').value = entry.notes || '';
+    }
+    
+    // Delete an entry
+    function deleteEntry(id) {
+        const confirmation = confirm("Are you sure you want to delete this entry?");
+        if (!confirmation) return;
+
+        const entryIndex = entries.findIndex(entry => entry.id === id);
+        if (entryIndex !== -1) {
+            entries.splice(entryIndex, 1);
+            const expenseElement = document.querySelector(`.expense-item[data-id="${id}"]`);
+            if (expenseElement) {
+                expenseElement.remove();
+            }
+            updateTotals();
+        }
+    }
+    
+    // Update an entry
+    if (editExpenseForm) {
+        editExpenseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editExpenseId').value);
+            const formData = {
+                title: document.getElementById('editExpenseTitle').value,
+                amount: parseFloat(document.getElementById('editExpenseAmount').value),
+                category: document.getElementById('editExpenseCategory').value,
+                date: document.getElementById('editExpenseDate').value,
+                notes: document.getElementById('editExpenseNotes').value
+            };
+    
+            const entryIndex = entries.findIndex(entry => entry.id === id);
+            if (entryIndex !== -1) {
+                entries[entryIndex] = { ...entries[entryIndex], ...formData, amount: parseFloat(formData.amount) };
+                const expenseElement = document.querySelector(`.expense-item[data-id="${id}"]`);
+                if (expenseElement) {
+                    expenseElement.querySelector('.expense-details h3').textContent = formData.title;
+                    expenseElement.querySelector('.expense-date').textContent = formatDate(new Date(formData.date));
+                    expenseElement.querySelector('.expense-amount').textContent = `-${formatCurrency(formData.amount)}`;
+                }
+                updateTotals();
+                closeModal(editExpenseModal);
+            }
+        });
+    }
+    
+    // Initialize edit and delete listeners
+    setupEditAndDeleteListeners();
   });

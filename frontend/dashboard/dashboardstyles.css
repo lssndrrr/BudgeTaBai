@@ -546,7 +546,7 @@
     align-items: center;
     flex-wrap: wrap;
     margin-bottom: var(--space-6);
-    gap: var(--space-4);
+    gap: var (--space-4);
   }
   
   .section-header h2 {
@@ -671,12 +671,12 @@
   .expense-actions {
     display: flex;
     gap: var(--space-2);
-    opacity: 0;
+    opacity: 0.5; 
     transition: opacity 0.2s ease;
   }
 
   .expense-item:hover .expense-actions {
-    opacity: 1;
+    opacity: 1; 
   }
 
   .expense-edit-btn,
@@ -881,6 +881,19 @@
   
   .delete-btn:hover {
     background-color: var(--error-dark);
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .close-btn:hover {
+    color: var(--error);
   }
   
   /* Responsive Styles */
@@ -1153,6 +1166,67 @@
     40%, 80% { transform: translateX(5px); }
   }
   
+  .budget-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    margin-top: var(--space-4);
+  }
+  
+  .total-expenses {
+    color: var(--text-medium);
+  }
+  
+  .remaining-balance {
+    color: var(--success);
+    font-weight: 500;
+  }
+  
+  .expense-item {
+    cursor: pointer;
+  }
+  
+  .entry-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .detail-item label {
+    font-weight: 500;
+    color: var(--text-medium);
+    font-size: 0.875rem;
+  }
+  
+  .detail-item span,
+  .detail-item p {
+    color: var(--text-dark);
+    font-size: 1rem;
+  }
+  
+  #expenseNotes {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  #expenseNotes:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+  }
+
   /* Hidden class for JavaScript usage */
   .hidden {
     display: none !important;

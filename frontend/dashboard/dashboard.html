@@ -51,7 +51,7 @@
             <i class="fas fa-bell"></i>
           </div>
           <div class="profile">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg" alt="Profile">
+            <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Profile">
           </div>
         </div>
       </header>
@@ -59,19 +59,15 @@
       <div class="dashboard-overview">
         <div class="budget-card">
           <div class="budget-header">
-            <h2>Total Budget</h2>
-            <div class="budget-actions">
-              <button class="budget-edit">Edit</button>
-            </div>
+            <h2>Total Income</h2>
           </div>
           <div class="budget-amount">₱5,000.00</div>
-          <div class="budget-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 65%;"></div>
+          <div class="budget-details">
+            <div class="total-expenses-container">
+              <span class="total-expenses">₱0 Total Expenses</span>
             </div>
-            <div class="progress-details">
-              <span class="spent">₱3,250.00 spent</span>
-              <span class="remaining">₱1,750.00 left</span>
+            <div class="remaining-balance-container">
+              <span class="remaining-balance">₱0 Remaining Balance</span>
             </div>
           </div>
         </div>
@@ -314,23 +310,27 @@
   </div>
 
   <button class="add-expense-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="12" x2="12" y1="5" y2="19"></line>
-      <line x1="5" x2="19" y1="12" y2="12"></line>
-    </svg>
+    <i class="fas fa-plus"></i>
   </button>
 
   <div class="modal" id="addExpenseModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Add New Expense</h2>
+        <h2>Add New Entry</h2>
         <button class="close-modal">&times;</button>
       </div>
       <div class="modal-body">
         <form id="expenseForm">
           <div class="form-group">
+            <label for="entryType">Entry Type</label>
+            <select id="entryType" required>
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label for="expenseTitle">Title</label>
-            <input type="text" id="expenseTitle" placeholder="Enter expense title" required>
+            <input type="text" id="expenseTitle" placeholder="Enter title" required>
           </div>
           <div class="form-group">
             <label for="expenseAmount">Amount (₱)</label>
@@ -350,11 +350,55 @@
             <label for="expenseDate">Date</label>
             <input type="date" id="expenseDate" required>
           </div>
+          <div class="form-group">
+            <label for="expenseNotes">Notes</label>
+            <textarea id="expenseNotes" rows="3" placeholder="Add notes (optional)"></textarea>
+          </div>
           <div class="form-actions">
             <button type="button" class="cancel-btn">Cancel</button>
-            <button type="submit" class="save-btn">Save Expense</button>
+            <button type="submit" class="save-btn">Save Entry</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="entryDetailsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Entry Details</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="entry-details">
+          <div class="detail-item">
+            <label>Type:</label>
+            <span id="detailType"></span>
+          </div>
+          <div class="detail-item">
+            <label>Title:</label>
+            <span id="detailTitle"></span>
+          </div>
+          <div class="detail-item">
+            <label>Amount:</label>
+            <span id="detailAmount"></span>
+          </div>
+          <div class="detail-item">
+            <label>Category:</label>
+            <span id="detailCategory"></span>
+          </div>
+          <div class="detail-item">
+            <label>Date:</label>
+            <span id="detailDate"></span>
+          </div>
+          <div class="detail-item">
+            <label>Notes:</label>
+            <p id="detailNotes"></p>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="close-btn">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -362,7 +406,7 @@
   <div class="modal" id="editExpenseModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Edit Expense</h2>
+        <h2>Edit Entry</h2>
         <button class="close-modal">&times;</button>
       </div>
       <div class="modal-body">
@@ -370,7 +414,7 @@
           <input type="hidden" id="editExpenseId">
           <div class="form-group">
             <label for="editExpenseTitle">Title</label>
-            <input type="text" id="editExpenseTitle" placeholder="Enter expense title" required>
+            <input type="text" id="editExpenseTitle" placeholder="Enter title" required>
           </div>
           <div class="form-group">
             <label for="editExpenseAmount">Amount (₱)</label>
@@ -379,7 +423,7 @@
           <div class="form-group">
             <label for="editExpenseCategory">Category</label>
             <select id="editExpenseCategory" required>
-              <option value="" disabled>Select a category</option>
+              <option value="" disabled selected>Select a category</option>
               <option value="food">Food</option>
               <option value="travel">Travel</option>
               <option value="bills">Bills</option>
@@ -390,48 +434,13 @@
             <label for="editExpenseDate">Date</label>
             <input type="date" id="editExpenseDate" required>
           </div>
+          <div class="form-group">
+            <label for="editExpenseNotes">Notes</label>
+            <textarea id="expenseNotes" rows="3" placeholder="Add notes (optional)"></textarea>
+          </div>
           <div class="form-actions">
             <button type="button" class="cancel-btn">Cancel</button>
             <button type="submit" class="save-btn">Save Changes</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="deleteConfirmModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Confirm Delete</h2>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to delete this expense?</p>
-        <p>This action cannot be undone.</p>
-        <input type="hidden" id="deleteExpenseId">
-        <div class="form-actions">
-          <button type="button" class="cancel-btn">Cancel</button>
-          <button type="button" class="delete-btn">Delete</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="editBudgetModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Edit Total Budget</h2>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="editBudgetForm">
-          <div class="form-group">
-            <label for="newBudgetAmount">New Budget Amount (₱)</label>
-            <input type="number" id="newBudgetAmount" placeholder="0.00" step="0.01" min="0" required>
-          </div>
-          <div class="form-actions">
-            <button type="button" class="cancel-btn">Cancel</button>
-            <button type="submit" class="save-btn">Save</button>
           </div>
         </form>
       </div>

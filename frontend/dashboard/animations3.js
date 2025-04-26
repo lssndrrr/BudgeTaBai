@@ -31,26 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const expenseItems = document.querySelectorAll('.expense-item');
     const sidebar = document.querySelector('.sidebar');
     const mainContent = document.querySelector('.main-content');
-    const budgetAmountEl = document.querySelector('.budget-amount');
-    const spentEl = document.querySelector('.spent');
-    const remainingEl = document.querySelector('.remaining');
-    const progressFillEl = document.querySelector('.progress-fill');
-    const categoryTotals = {
-      food: document.querySelector('.food-card .amount'),
-      travel: document.querySelector('.travel-card .amount'),
-      bills: document.querySelector('.bills-card .amount'),
-      other: document.querySelector('.other-card .amount'),
-    };
-    const categoryProgress = {
-      food: document.querySelector('.food-card .card-progress-fill'),
-      travel: document.querySelector('.travel-card .card-progress-fill'),
-      bills: document.querySelector('.bills-card .card-progress-fill'),
-      other: document.querySelector('.other-card .card-progress-fill'),
-    };
     
-    // Static variables to hold data
-    let expenses = [];
-    let totalBudget = 0;
+    // Setup global variables
+    let expenses = [
+      { id: 1, title: 'Grocery Shopping', amount: 85.40, category: 'food', date: 'June 15, 2025' },
+      { id: 2, title: 'Uber Ride', amount: 24.50, category: 'travel', date: 'June 14, 2025' },
+      { id: 3, title: 'Electricity Bill', amount: 94.20, category: 'bills', date: 'June 12, 2025' },
+      { id: 4, title: 'Restaurant Dinner', amount: 65.30, category: 'food', date: 'June 10, 2025' },
+      { id: 5, title: 'Internet Bill', amount: 79.99, category: 'bills', date: 'June 8, 2025' }
+    ];
     
     const toggleBtn = document.createElement('button');
     toggleBtn.className = 'toggle-sidebar';
@@ -159,244 +148,121 @@ document.addEventListener('DOMContentLoaded', () => {
       return parseFloat(amountStr.replace(/[₱,]/g, ''));
     }
     
-    async function fetchTotalBudget() {
-      try {
-        // Filter the expenses array for entries with entry_type "income"
-        const totalBudget = expenses
-          .filter(entry => entry.entry_type === 'income') // Filter for income entries
-          .reduce((sum, entry) => sum + entry.amount, 0); // Sum up the amounts
-    
-        // Update the UI with the total budget
-        const budgetElement = document.querySelector('.budget-amount');
-        if (budgetElement) {
-          budgetElement.textContent = `${formatCurrency(totalBudget)} budget`;
-        }
-      } catch (error) {
-        console.error('Error calculating total budget:', error);
-      }
+    function addExpense(expenseData) {
+      const newId = expenses.length > 0 ? Math.max(...expenses.map(exp => exp.id)) + 1 : 1;
+      
+      const newExpense = {
+        id: newId,
+        title: expenseData.title,
+        amount: parseFloat(expenseData.amount),
+        category: expenseData.category,
+        date: formatDate(new Date(expenseData.date))
+      };
+      
+      expenses.unshift(newExpense);
+      
+      renderNewExpense(newExpense);
+      
+      updateBudgetDisplay();
+      
+      closeAllModals();
     }
     
-    async function fetchEntries() {
-      try {
-        const response = await fetch('http://127.0.0.1:8000/api/tracker/entries/', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          expenses = data.map(entry => ({
-            ...entry,
-            amount: parseFloat(entry.amount), // Ensure `amount` is a number
-          }));
-          renderExpenses(); // Re-render the expenses list
-        } else {
-          console.error('Failed to fetch entries');
-        }
-      } catch (error) {
-        console.error('Error fetching entries:', error);
-      }
-    }
-    
-    function renderExpenses() {
-      const expensesList = document.querySelector('.expenses-list');
-      if (!expensesList) return;
-    
-      // Clear the existing list
-      expensesList.innerHTML = '';
-    
-      // Loop through the static `expenses` array and render each expense
-      expenses.forEach((entry) => {
-        if (entry.entry_type === 'expense') {
-          const expenseElement = document.createElement('div');
-          expenseElement.className = 'expense-item';
-          expenseElement.dataset.category = entry.category;
-          expenseElement.dataset.id = entry.id;
-    
-          expenseElement.innerHTML = `
-            <div class="expense-icon ${entry.category}">
-              ${getCategoryIcon(entry.category)}
-            </div>
-            <div class="expense-details">
-              <h3>${entry.title}</h3>
-              <p class="expense-date">${formatDate(new Date(entry.date))}</p>
-            </div>
-            <div class="expense-amount">-${formatCurrency(parseFloat(entry.amount))}</div>
-            <div class="expense-actions">
-              <button class="expense-edit-btn" aria-label="Edit expense">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="expense-delete-btn" aria-label="Delete expense">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          `;
-    
-          expensesList.appendChild(expenseElement);
-    
-          // Add event listeners for edit and delete buttons
-          const editBtn = expenseElement.querySelector('.expense-edit-btn');
-          if (editBtn) {
-            editBtn.addEventListener('click', () => handleEditClick(entry.id));
-          }
-    
-          const deleteBtn = expenseElement.querySelector('.expense-delete-btn');
-          if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => handleDeleteClick(entry.id));
-          }
-        }
-      });
-    
-      updateBudgetDisplay(); // Update totals and progress bars
-    }
-
-    async function addExpense(expenseData) {
-      try {
-        const response = await fetch('http://127.0.0.1:8000/api/tracker/entries/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-          },
-          body: JSON.stringify(expenseData),
-        });
-    
-        if (response.ok) {
-          const newExpense = await response.json();
-          expenses.unshift(newExpense); // Add to static variable
-          renderNewExpense(newExpense); // Render the new expense
-          updateBudgetDisplay(); // Update totals and progress bars
-          closeAllModals();
-        } else {
-          console.error('Failed to add expense');
-        }
-      } catch (error) {
-        console.error('Error adding expense:', error);
-      }
-    }
-    
-    async function editExpense(id, expenseData) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/tracker/entries/${id}/`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-          },
-          body: JSON.stringify(expenseData),
-        });
-    
-        if (response.ok) {
-          const updatedExpense = await response.json();
-          const expenseIndex = expenses.findIndex((expense) => expense.id === id);
-    
-          if (expenseIndex !== -1) {
-            expenses[expenseIndex] = updatedExpense; // Update the static variable
-    
-            // Update the UI to reflect the changes
-            const expenseElement = document.querySelector(`.expense-item[data-id="${id}"]`);
-    
-            if (expenseElement) {
-              // Update category class if changed
-              if (expenseElement.dataset.category !== expenseData.category) {
-                expenseElement.dataset.category = expenseData.category;
-    
-                const iconElement = expenseElement.querySelector('.expense-icon');
-                if (iconElement) {
-                  // Remove all category classes
-                  iconElement.classList.remove('food', 'travel', 'bills', 'other');
-                  // Add the new category class
-                  iconElement.classList.add(expenseData.category);
-    
-                  // Update the icon SVG based on the category
-                  iconElement.innerHTML = getCategoryIcon(expenseData.category);
-                }
-              }
-    
-              // Update expense title
-              const titleElement = expenseElement.querySelector('.expense-details h3');
-              if (titleElement) {
-                titleElement.textContent = expenseData.title;
-              }
-    
-              // Update expense date
-              const dateElement = expenseElement.querySelector('.expense-date');
-              if (dateElement) {
-                dateElement.textContent = formatDate(new Date(expenseData.date));
-              }
-    
-              // Update expense amount
-              const amountElement = expenseElement.querySelector('.expense-amount');
-              if (amountElement) {
-                amountElement.textContent = `-${formatCurrency(parseFloat(expenseData.amount))}`;
-              }
-    
-              // Add a quick highlight animation to show it's been updated
-              expenseElement.classList.add('fade-in');
-              setTimeout(() => {
-                expenseElement.classList.remove('fade-in');
-              }, 500);
+    function editExpense(id, expenseData) {
+      const expenseIndex = expenses.findIndex(expense => expense.id === id);
+      
+      if (expenseIndex !== -1) {
+        expenses[expenseIndex] = {
+          ...expenses[expenseIndex],
+          title: expenseData.title,
+          amount: parseFloat(expenseData.amount),
+          category: expenseData.category,
+          date: formatDate(new Date(expenseData.date))
+        };
+        
+        // Update the UI to reflect the changes
+        const expenseElement = document.querySelector(`.expense-item[data-id="${id}"]`);
+        
+        if (expenseElement) {
+          // Update category class if changed
+          if (expenseElement.dataset.category !== expenseData.category) {
+            expenseElement.dataset.category = expenseData.category;
+            
+            const iconElement = expenseElement.querySelector('.expense-icon');
+            if (iconElement) {
+              // Remove all category classes
+              iconElement.classList.remove('food', 'travel', 'bills', 'other');
+              // Add the new category class
+              iconElement.classList.add(expenseData.category);
+              
+              // Update the icon SVG based on the category
+              iconElement.innerHTML = getCategoryIcon(expenseData.category);
             }
-    
-            updateBudgetDisplay();
           }
-    
-          closeAllModals();
-        } else {
-          console.error('Failed to edit expense');
+          
+          // Update expense title
+          const titleElement = expenseElement.querySelector('.expense-details h3');
+          if (titleElement) {
+            titleElement.textContent = expenseData.title;
+          }
+          
+          // Update expense date
+          const dateElement = expenseElement.querySelector('.expense-date');
+          if (dateElement) {
+            dateElement.textContent = formatDate(new Date(expenseData.date));
+          }
+          
+          // Update expense amount
+          const amountElement = expenseElement.querySelector('.expense-amount');
+          if (amountElement) {
+            amountElement.textContent = `-${formatCurrency(parseFloat(expenseData.amount))}`;
+          }
+          
+          // Add a quick highlight animation to show it's been updated
+          expenseElement.classList.add('fade-in');
+          setTimeout(() => {
+            expenseElement.classList.remove('fade-in');
+          }, 500);
         }
-      } catch (error) {
-        console.error('Error editing expense:', error);
+        
+        updateBudgetDisplay();
       }
+      
+      closeAllModals();
     }
-
-    async function deleteExpense(id) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/tracker/entries/${id}/`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        });
     
-        if (response.ok) {
-          const expenseIndex = expenses.findIndex((expense) => expense.id === parseInt(id));
-    
-          if (expenseIndex !== -1) {
-            // Remove from the expenses array
-            expenses.splice(expenseIndex, 1);
-    
-            // Remove from the UI
-            const expenseElement = document.querySelector(`.expense-item[data-id="${id}"]`);
-    
-            if (expenseElement) {
-              // Add deletion animation
-              expenseElement.style.opacity = '0';
-              expenseElement.style.transform = 'translateX(-20px)';
-              expenseElement.style.height = `${expenseElement.offsetHeight}px`;
-    
-              setTimeout(() => {
-                expenseElement.style.height = '0';
-                expenseElement.style.padding = '0';
-                expenseElement.style.margin = '0';
-                expenseElement.style.overflow = 'hidden';
-    
-                setTimeout(() => {
-                  expenseElement.remove();
-                }, 300);
-              }, 300);
-            }
-    
-            updateBudgetDisplay();
-          }
-    
-          closeAllModals();
-        } else {
-          console.error('Failed to delete expense');
+    function deleteExpense(id) {
+      const expenseIndex = expenses.findIndex(expense => expense.id === parseInt(id));
+      
+      if (expenseIndex !== -1) {
+        // Remove from the expenses array
+        expenses.splice(expenseIndex, 1);
+        
+        // Remove from the UI
+        const expenseElement = document.querySelector(`.expense-item[data-id="${id}"]`);
+        
+        if (expenseElement) {
+          // Add deletion animation
+          expenseElement.style.opacity = '0';
+          expenseElement.style.transform = 'translateX(-20px)';
+          expenseElement.style.height = `${expenseElement.offsetHeight}px`;
+          
+          setTimeout(() => {
+            expenseElement.style.height = '0';
+            expenseElement.style.padding = '0';
+            expenseElement.style.margin = '0';
+            expenseElement.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+              expenseElement.remove();
+            }, 300);
+          }, 300);
         }
-      } catch (error) {
-        console.error('Error deleting expense:', error);
+        
+        updateBudgetDisplay();
       }
+      
+      closeAllModals();
     }
     
     function formatDate(date) {
@@ -421,22 +287,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function renderNewExpense(expense) {
       const expensesList = document.querySelector('.expenses-list');
-    
+      
       if (!expensesList) return;
-    
+      
       const expenseElement = document.createElement('div');
       expenseElement.className = 'expense-item';
       expenseElement.dataset.category = expense.category;
       expenseElement.dataset.id = expense.id;
       expenseElement.style.opacity = '0';
-    
+      
       expenseElement.innerHTML = `
         <div class="expense-icon ${expense.category}">
           ${getCategoryIcon(expense.category)}
         </div>
         <div class="expense-details">
           <h3>${expense.title}</h3>
-          <p class="expense-date">${formatDate(new Date(expense.date))}</p>
+          <p class="expense-date">${expense.date}</p>
         </div>
         <div class="expense-amount">-${formatCurrency(expense.amount)}</div>
         <div class="expense-actions">
@@ -454,20 +320,20 @@ document.addEventListener('DOMContentLoaded', () => {
           </button>
         </div>
       `;
-    
+      
       expensesList.prepend(expenseElement);
-    
+      
       // Add event listeners to the new buttons
       const editBtn = expenseElement.querySelector('.expense-edit-btn');
       if (editBtn) {
         editBtn.addEventListener('click', () => handleEditClick(expense.id));
       }
-    
+      
       const deleteBtn = expenseElement.querySelector('.expense-delete-btn');
       if (deleteBtn) {
         deleteBtn.addEventListener('click', () => handleDeleteClick(expense.id));
       }
-    
+      
       setTimeout(() => {
         expenseElement.style.opacity = '1';
         expenseElement.classList.add('slide-left');
@@ -476,26 +342,26 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function updateBudgetDisplay() {
       const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-    
-      // Update spent amount
+      
       const spentElement = document.querySelector('.spent');
       if (spentElement) {
         spentElement.textContent = `${formatCurrency(totalExpenses)} spent`;
       }
-    
-      // Use the global `totalBudget` variable for consistency
+      
+      const budgetAmountText = document.querySelector('.budget-amount')?.textContent || '₱5,000.00';
+      const totalBudget = parseFloat(budgetAmountText.replace(/[₱,]/g, ''));
+      
       const remainingElement = document.querySelector('.remaining');
       if (remainingElement) {
         const remaining = totalBudget - totalExpenses;
         remainingElement.textContent = `${formatCurrency(remaining)} left`;
       }
-    
-      // Update the progress bar
+      
       const progressFill = document.querySelector('.progress-fill');
       if (progressFill) {
         const percentage = Math.min((totalExpenses / totalBudget) * 100, 100);
         progressFill.style.width = `${percentage}%`;
-    
+        
         if (percentage >= 100) {
           progressFill.style.backgroundColor = 'var(--error)';
         } else if (percentage >= 80) {
@@ -504,30 +370,29 @@ document.addEventListener('DOMContentLoaded', () => {
           progressFill.style.backgroundColor = 'var(--primary)';
         }
       }
-    
-      // Update category-specific amounts and progress bars
+      
       updateCategoryAmounts();
     }
     
     function updateCategoryAmounts() {
       const categories = ['food', 'travel', 'bills', 'other'];
-    
+      
       categories.forEach(category => {
         const categoryTotal = expenses
           .filter(expense => expense.category === category)
           .reduce((sum, expense) => sum + expense.amount, 0);
-    
+        
         const amountElement = document.querySelector(`.${category}-card .amount`);
         if (amountElement) {
           amountElement.textContent = `${formatCurrency(categoryTotal)}`;
         }
-    
+        
         const progressElement = document.querySelector(`.${category}-card .card-progress-fill`);
         if (progressElement) {
           const budgetAmountText = document.querySelector('.budget-amount')?.textContent || '₱5,000.00';
           const totalBudget = parseFloat(budgetAmountText.replace(/[₱,]/g, ''));
           const categoryBudget = totalBudget / 4;
-    
+          
           const percentage = Math.min((categoryTotal / categoryBudget) * 100, 100);
           progressElement.style.width = `${percentage}%`;
         }
@@ -600,10 +465,9 @@ document.addEventListener('DOMContentLoaded', () => {
           title: document.getElementById('expenseTitle').value,
           amount: document.getElementById('expenseAmount').value,
           category: document.getElementById('expenseCategory').value,
-          date: document.getElementById('expenseDate').value,
-          entry_type: document.getElementById('expenseType').value,
-          notes: document.getElementById('expenseNotes').value,
+          date: document.getElementById('expenseDate').value
         };
+        
         addExpense(formData);
         expenseForm.reset();
         
@@ -622,9 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
           title: document.getElementById('editExpenseTitle').value,
           amount: document.getElementById('editExpenseAmount').value,
           category: document.getElementById('editExpenseCategory').value,
-          date: document.getElementById('editExpenseDate').value,
-          entry_type: document.getElementById('editExpenseType').value, // Add entry_type field
-          notes: document.getElementById('editExpenseNotes').value, // Added notes field
+          date: document.getElementById('editExpenseDate').value
         };
         
         editExpense(id, formData);
@@ -709,11 +571,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       checkMobile();
       
-      // Fetch entries and calculate total budget
-      fetchEntries().then(() => {
-        fetchTotalBudget(); // Calculate total budget after fetching entries
-      });
-
       updateBudgetDisplay();
       
       const style = document.createElement('style');
@@ -765,39 +622,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (editBudgetForm) {
-      editBudgetForm.addEventListener('submit', async (e) => {
+      editBudgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const newBudgetAmount = parseFloat(newBudgetAmountInput.value);
-    
         if (!isNaN(newBudgetAmount)) {
-          try {
-            // Send the updated budget to the API
-            const response = await fetch('http://127.0.0.1:8000/api/tracker/budget/', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-              },
-              body: JSON.stringify({ total_budget: newBudgetAmount }),
-            });
-    
-            if (response.ok) {
-              // Update the local budget and UI
-              totalBudget = newBudgetAmount;
-              const budgetAmountElement = document.querySelector('.budget-amount');
-              if (budgetAmountElement) {
-                budgetAmountElement.textContent = `₱${newBudgetAmount.toFixed(2)}`;
-              }
-              editBudgetModal.classList.remove('show');
-              document.body.style.overflow = '';
-    
-              updateBudgetDisplay();
-            } else {
-              console.error('Failed to update budget');
-            }
-          } catch (error) {
-            console.error('Error updating budget:', error);
+          const budgetAmountElement = document.querySelector('.budget-amount');
+          if (budgetAmountElement) {
+            budgetAmountElement.textContent = `₱${newBudgetAmount.toFixed(2)}`;
           }
+          editBudgetModal.classList.remove('show');
+          document.body.style.overflow = '';
+          
+          updateBudgetDisplay();
         }
       });
     }

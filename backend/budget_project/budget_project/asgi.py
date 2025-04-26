@@ -1,5 +1,5 @@
 """
-ASGI config for budget_tracker project.
+ASGI config for budget_project project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'budget_tracker.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'budget_project.settings')
 
 application = get_asgi_application()

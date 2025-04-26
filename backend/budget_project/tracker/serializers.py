@@ -4,7 +4,7 @@ from .models import Entry, Budget
 class EntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
-        fields = ['id', 'title', 'amount', 'date', 'category'] 
+        fields = ['id', 'title', 'amount', 'date', 'category', 'entry_type'] 
 
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta:

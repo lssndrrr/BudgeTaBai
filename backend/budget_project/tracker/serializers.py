@@ -1,12 +1,7 @@
 from rest_framework import serializers
-from .models import Entry, Budget
+from .models import Entry
 
 class EntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
-        fields = ['id', 'title', 'amount', 'date', 'category', 'entry_type'] 
-
-class BudgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Budget
-        fields = ['total_budget']
+        fields = ['id', 'title', 'amount', 'date', 'category', 'entry_type', 'notes']

@@ -7,9 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Entry
-from .models import Budget
 from .serializers import EntrySerializer
-from .serializers import BudgetSerializer
+
 class EntryListCreateView(generics.ListCreateAPIView):
     serializer_class = EntrySerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -27,32 +26,6 @@ class EntryDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Entry.objects.filter(user=self.request.user)
 
-class BudgetView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        # Retrieve or create the budget for the authenticated user
-        budget, created = Budget.objects.get_or_create(user=request.user)
-        serializer = BudgetSerializer(budget)
-        return Response(serializer.data)
-
-    def post(self, request):
-        # Create or update the budget for the authenticated user
-        budget, created = Budget.objects.get_or_create(user=request.user)
-        serializer = BudgetSerializer(budget, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request):
-        # Update the budget for the authenticated user, or create it if it doesn't exist
-        budget, created = Budget.objects.get_or_create(user=request.user)
-        serializer = BudgetSerializer(budget, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class ExportCSVView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 

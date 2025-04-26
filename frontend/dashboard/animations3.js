@@ -159,23 +159,20 @@ document.addEventListener('DOMContentLoaded', () => {
       return parseFloat(amountStr.replace(/[₱,]/g, ''));
     }
     
-    async function fetchBudget() {
+    async function fetchTotalBudget() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/tracker/budget/', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          totalBudget = parseFloat(data.total_budget); // Assign to static variable
-          document.querySelector('.budget-amount').textContent = `₱${totalBudget.toFixed(2)}`;
-          updateBudgetDisplay(); // Update the UI
-        } else {
-          console.error('Failed to fetch budget');
+        // Filter the expenses array for entries with entry_type "income"
+        const totalBudget = expenses
+          .filter(entry => entry.entry_type === 'income') // Filter for income entries
+          .reduce((sum, entry) => sum + entry.amount, 0); // Sum up the amounts
+    
+        // Update the UI with the total budget
+        const budgetElement = document.querySelector('.budget-amount');
+        if (budgetElement) {
+          budgetElement.textContent = `${formatCurrency(totalBudget)} budget`;
         }
       } catch (error) {
-        console.error('Error fetching budget:', error);
+        console.error('Error calculating total budget:', error);
       }
     }
     
@@ -603,9 +600,10 @@ document.addEventListener('DOMContentLoaded', () => {
           title: document.getElementById('expenseTitle').value,
           amount: document.getElementById('expenseAmount').value,
           category: document.getElementById('expenseCategory').value,
-          date: document.getElementById('expenseDate').value
+          date: document.getElementById('expenseDate').value,
+          entry_type: document.getElementById('expenseType').value,
+          notes: document.getElementById('expenseNotes').value,
         };
-        
         addExpense(formData);
         expenseForm.reset();
         
@@ -624,7 +622,9 @@ document.addEventListener('DOMContentLoaded', () => {
           title: document.getElementById('editExpenseTitle').value,
           amount: document.getElementById('editExpenseAmount').value,
           category: document.getElementById('editExpenseCategory').value,
-          date: document.getElementById('editExpenseDate').value
+          date: document.getElementById('editExpenseDate').value,
+          entry_type: document.getElementById('editExpenseType').value, // Add entry_type field
+          notes: document.getElementById('editExpenseNotes').value, // Added notes field
         };
         
         editExpense(id, formData);
@@ -709,9 +709,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       checkMobile();
       
-      // Fetch budget and entries for initial display
-      fetchBudget();
-      fetchEntries();
+      // Fetch entries and calculate total budget
+      fetchEntries().then(() => {
+        fetchTotalBudget(); // Calculate total budget after fetching entries
+      });
 
       updateBudgetDisplay();
       

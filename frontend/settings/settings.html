@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Tracker - Settings</title>
+  <link rel="stylesheet" href="settingsstyles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-circle">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <h1>Budge<span>Ta</span>Bai</h1>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="../overview/overview.html" class="nav-item">
+          <i class="fas fa-chart-pie"></i>
+          <span>Overview</span>
+        </a>
+        <a href="../dashboard/dashboard.html" class="nav-item">
+          <i class="fas fa-th-large"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="settings.html" class="nav-item active">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="dashboard-header">
+        <div class="dashboard-title">
+          <h1>Settings</h1>
+          <div class="date-selector">
+            <input type="month" id="monthYearPicker" class="month-year-picker">
+          </div>
+        </div>
+        <div class="user-profile">
+          <div class="notifications">
+            <i class="fas fa-bell"></i>
+          </div>
+          <div class="profile">
+            <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Profile">
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard-overview">
+        <div class="budget-card">
+          <div class="budget-header">
+            <h2>Total Income</h2>
+          </div>
+          <div class="budget-amount">₱5,000.00</div>
+          <div class="budget-details">
+            <div class="total-expenses-container">
+              <span class="total-expenses">₱0 Total Expenses</span>
+            </div>
+            <div class="remaining-balance-container">
+              <span class="remaining-balance">₱0 Remaining Balance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-cards">
+
+        <!-- Weekly Limit Card -->
+        <div class="summary-card food-card">
+          <div class="card-icon">
+            <i class="fas fa-calendar-week"></i> <!-- changed to Weekly icon -->
+          </div>
+          <div class="card-details">
+            <h3>Weekly Limit</h3>
+            <p class="amount" id="weeklyAmount">₱1,200.00</p>
+            <input type="range" min="0" max="10000" value="1200" step="100" class="amount-slider" id="weeklySlider" style=" width: 21rem;">
+            <div class="card-progress"></div>
+          </div>
+        </div>
+
+        <!-- Monthly Limit Card -->
+        <div class="summary-card travel-card">
+          <div class="card-icon">
+            <i class="fas fa-calendar-alt"></i> <!-- changed to Monthly icon -->
+          </div>
+          <div class="card-details">
+            <h3>Monthly Limit</h3>
+            <p class="amount" id="monthlyAmount">₱850.00</p>
+            <input type="range" min="0" max="50000" value="850" step="100" class="amount-slider" id="monthlySlider" style=" width: 21rem;">
+            <div class="card-progress"></div>
+          </div>
+        </div>
+
+        <!-- Annual Limit Card -->
+        <div class="summary-card bills-card">
+          <div class="card-icon">
+            <i class="fas fa-calendar"></i> <!-- changed to Yearly icon -->
+          </div>
+          <div class="card-details">
+            <h3>Annual Limit</h3>
+            <p class="amount" id="annualAmount">₱1,200.00</p>
+            <input type="range" min="0" max="100000" value="1200" step="500" class="amount-slider" id="annualSlider" style=" width: 21rem;">
+            <div class="card-progress"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Weekly
+    const weeklySlider = document.getElementById('weeklySlider');
+    const weeklyAmount = document.getElementById('weeklyAmount');
+    const weeklyFill = document.getElementById('weeklyFill');
+    weeklySlider.addEventListener('input', function() {
+      weeklyAmount.textContent = `₱${Number(this.value).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+      weeklyFill.style.width = `${(this.value / this.max) * 100}%`;
+    });
+
+    // Monthly
+    const monthlySlider = document.getElementById('monthlySlider');
+    const monthlyAmount = document.getElementById('monthlyAmount');
+    const monthlyFill = document.getElementById('monthlyFill');
+    monthlySlider.addEventListener('input', function() {
+      monthlyAmount.textContent = `₱${Number(this.value).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+      monthlyFill.style.width = `${(this.value / this.max) * 100}%`;
+    });
+
+    // Annual
+    const annualSlider = document.getElementById('annualSlider');
+    const annualAmount = document.getElementById('annualAmount');
+    const annualFill = document.getElementById('annualFill');
+    annualSlider.addEventListener('input', function() {
+      annualAmount.textContent = `₱${Number(this.value).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+      annualFill.style.width = `${(this.value / this.max) * 100}%`;
+    });
+  </script>
+
+</body>
+</html>

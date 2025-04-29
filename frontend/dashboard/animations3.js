@@ -29,29 +29,75 @@ function hexToRgb(hex) {
 }
 
 let transactions = [
-  { id: 1, title: 'Salary', amount: 3500, date: '2025-04-15', category: 'income', notes: 'Monthly salary', entry_type: 'income' },
-  { id: 2, title: 'Rent', amount: 1200, date: '2025-04-05', category: 'bills', notes: 'Monthly rent payment', entry_type: 'expense' },
-  { id: 3, title: 'Grocery Shopping', amount: 150.75, date: '2025-04-10', category: 'food', notes: 'Weekly groceries', entry_type: 'expense' },
-  { id: 4, title: 'Freelance Project', amount: 850, date: '2025-04-12', category: 'income', notes: 'Website development for client', entry_type: 'income' },
-  { id: 5, title: 'Dinner Out', amount: 85.50, date: '2025-04-14', category: 'food', notes: 'Dinner with friends', entry_type: 'expense' },
-  { id: 6, title: 'Uber Rides', amount: 32.25, date: '2025-04-13', category: 'travel', notes: 'Transportation for the week', entry_type: 'expense' },
-  { id: 7, title: 'Internet Bill', amount: 59.99, date: '2025-04-08', category: 'bills', notes: 'Monthly internet subscription', entry_type: 'expense' }
+  // { id: 1, title: 'Salary', amount: 3500, date: '2025-04-15', category: 'income', notes: 'Monthly salary', entry_type: 'income' },
+  // { id: 2, title: 'Rent', amount: 1200, date: '2025-04-05', category: 'bills', notes: 'Monthly rent payment', entry_type: 'expense' },
+  // { id: 3, title: 'Grocery Shopping', amount: 150.75, date: '2025-04-10', category: 'food', notes: 'Weekly groceries', entry_type: 'expense' },
+  // { id: 4, title: 'Freelance Project', amount: 850, date: '2025-04-12', category: 'income', notes: 'Website development for client', entry_type: 'income' },
+  // { id: 5, title: 'Dinner Out', amount: 85.50, date: '2025-04-14', category: 'food', notes: 'Dinner with friends', entry_type: 'expense' },
+  // { id: 6, title: 'Uber Rides', amount: 32.25, date: '2025-04-13', category: 'travel', notes: 'Transportation for the week', entry_type: 'expense' },
+  // { id: 7, title: 'Internet Bill', amount: 59.99, date: '2025-04-08', category: 'bills', notes: 'Monthly internet subscription', entry_type: 'expense' }
 ];
 
 function calculateFinancialSummary() {
+  // Edge case if we ever have an empty list
+  if (transactions.length === 0) {
+    // If the transactions list is empty, set all amounts to 0
+    if (incomeAmountElement) {
+      incomeAmountElement.textContent = `$0.00`;
+    }
+    if (expenseAmountElement) {
+      expenseAmountElement.textContent = `$0.00`;
+    }
+    if (balanceAmountElement) {
+      balanceAmountElement.textContent = `$0.00`;
+    }
+    return; // Exit the function early
+  }
+  
+  // Secured the type-checking
   const totalIncome = transactions
     .filter(t => t.entry_type === 'income')
-    .reduce((sum, t) => sum + t.amount, 0);
+    .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0); // Ensure `amount` is a number
 
   const totalExpenses = transactions
     .filter(t => t.entry_type === 'expense')
-    .reduce((sum, t) => sum + t.amount, 0);
+    .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0); // Ensure `amount` is a number
 
   const balance = totalIncome - totalExpenses;
 
-  incomeAmountElement.textContent = `$${totalIncome.toFixed(2)}`;
-  expenseAmountElement.textContent = `$${totalExpenses.toFixed(2)}`;
-  balanceAmountElement.textContent = `$${balance.toFixed(2)}`;
+  // Update UI only if elements exist
+  if (incomeAmountElement) {
+    incomeAmountElement.textContent = `$${totalIncome.toFixed(2)}`;
+  }
+  if (expenseAmountElement) {
+    expenseAmountElement.textContent = `$${totalExpenses.toFixed(2)}`;
+  }
+  if (balanceAmountElement) {
+    balanceAmountElement.textContent = `$${balance.toFixed(2)}`;
+  }
+
+  // Update trends only if elements exist, for secure checking
+  const incomeTrend = document.querySelector('.income-card .trend');
+  const expenseTrend = document.querySelector('.expense-card .trend');
+  const balanceTrend = document.querySelector('.balance-card .trend');
+
+  if (incomeTrend) {
+    const incomeTrendPercent = Math.floor(Math.random() * 15) + 5; // Random trend for demo
+    incomeTrend.innerHTML = `<i class="fa-solid fa-arrow-up"></i> ${incomeTrendPercent}% from last month`;
+    incomeTrend.className = 'trend positive';
+  }
+
+  if (expenseTrend) {
+    const expenseTrendPercent = Math.floor(Math.random() * 12) + 3; // Random trend for demo
+    expenseTrend.innerHTML = `<i class="fa-solid fa-arrow-down"></i> ${expenseTrendPercent}% from last month`;
+    expenseTrend.className = 'trend positive';
+  }
+
+  if (balanceTrend) {
+    const balanceTrendPercent = Math.floor(Math.random() * 20) + 8; // Random trend for demo
+    balanceTrend.innerHTML = `<i class="fa-solid fa-arrow-up"></i> ${balanceTrendPercent}% from last month`;
+    balanceTrend.className = 'trend positive';
+  }
 
   checkBudgetWarning();
 }
@@ -329,6 +375,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Format date
     const date = new Date(transaction.date);
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    // Ensure `amount` is a valid number
+    const amount = isNaN(transaction.amount) ? 0 : transaction.amount;
     
     item.innerHTML = `
       <div class="transaction-icon ${transaction.entry_type}">
@@ -355,15 +404,43 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Render transactions
-  function renderTransactions(filter = 'all') {
+  async function renderTransactions(filter = 'all') {
+    try {
+      // Fetch transactions from the backend
+      const response = await fetch('http://127.0.0.1:8000/api/tracker/entries/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        transactions = data.map(transaction => ({
+          ...transaction,
+          amount: parseFloat(transaction.amount) || 0, // Ensure `amount` is a number
+        }));
+      } else {
+        console.error('Failed to fetch transactions');
+        showNotification('Failed to fetch transactions from the server.', 'error');
+        return;
+      }
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      showNotification('An error occurred while fetching transactions.', 'error');
+      return;
+    }
+  
+    // Clear the transactions list in the UI
     transactionsList.innerHTML = '';
-    
+  
+    // Filter transactions based on the provided filter
     const filteredTransactions = transactions.filter(t => {
       if (filter === 'all') return true;
       if (filter === 'income' || filter === 'expense') return t.entry_type === filter;
       return t.category === filter;
     });
-    
+  
+    // Handle empty state
     if (filteredTransactions.length === 0) {
       transactionsList.innerHTML = `
         <div class="empty-state">
@@ -372,66 +449,90 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
       return;
     }
-    
-    // Sort by date (most recent first)
+  
+    // Sort transactions by date (most recent first)
     filteredTransactions
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .forEach(transaction => {
         const item = createTransactionItem(transaction);
         transactionsList.appendChild(item);
-        
+  
         // Add entrance animation
         setTimeout(() => {
           item.style.opacity = '1';
           item.style.transform = 'translateY(0)';
         }, 50);
       });
+  
+    // Recalculate financial summary after rendering
+    calculateFinancialSummary();
   }
   
-  // Save transaction
-  function saveTransaction(e) {
+  async function saveTransaction(e) {
     e.preventDefault();
-    
+  
     // Get form data
     const formData = new FormData(transactionForm);
     const transaction = {
-      id: transactions.length + 1,
       title: formData.get('title'),
       amount: parseFloat(formData.get('amount')),
       date: formData.get('date'),
       category: formData.get('category'),
       notes: formData.get('notes'),
-      entry_type: formData.get('entry_type')
+      entry_type: formData.get('entry_type'),
     };
-    
-    // Add to transactions array
-    transactions.push(transaction);
-    
-    // Close modal and refresh
-    closeTransactionModal();
-    renderTransactions();
-    
-    // Recalculate financial summary
-    calculateFinancialSummary();
-    
-    // Show success notification
-    showNotification('Transaction added successfully!');
-    
-    // Add a bounce animation to the respective card
-    const cardToAnimate = transaction.entry_type === 'income' ? 
-      document.querySelector('.income-card') : 
-      document.querySelector('.expense-card');
-    
-    cardToAnimate.classList.add('bounce');
-    setTimeout(() => {
-      cardToAnimate.classList.remove('bounce');
-    }, 1000);
+
+    // Secure type-checking for amount
+    if (isNaN(transaction.amount)) {
+      showNotification('Invalid amount. Please enter a valid number.', 'error');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/tracker/entries/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        body: JSON.stringify(transaction),
+      });
+  
+      if (response.ok) {
+        const newTransaction = await response.json();
+        transactions.push(newTransaction); // Add to local data
+  
+        // Close modal and refresh
+        closeTransactionModal();
+        renderTransactions();
+  
+        // Recalculate financial summary
+        calculateFinancialSummary();
+  
+        // Show success notification
+        showNotification('Transaction added successfully!');
+  
+        // Add a bounce animation to the respective card
+        const cardToAnimate = transaction.entry_type === 'income'
+          ? document.querySelector('.income-card')
+          : document.querySelector('.expense-card');
+  
+        cardToAnimate.classList.add('bounce');
+        setTimeout(() => {
+          cardToAnimate.classList.remove('bounce');
+        }, 1000);
+      } else {
+        console.error('Failed to add transaction');
+      }
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+    }
   }
   
   // Update transaction
-  function updateTransaction(e) {
+  async function updateTransaction(e) {
     e.preventDefault();
-    
+  
     // Get form data
     const formData = new FormData(editTransactionForm);
     const updatedTransaction = {
@@ -441,109 +542,115 @@ document.addEventListener('DOMContentLoaded', function() {
       date: formData.get('date'),
       category: formData.get('category'),
       notes: formData.get('notes'),
-      entry_type: formData.get('entry_type')
+      entry_type: formData.get('entry_type'),
     };
-    
-    // Get original transaction to check if type changed
-    const originalTransaction = transactions.find(t => t.id === updatedTransaction.id);
-    const typeChanged = originalTransaction.entry_type !== updatedTransaction.entry_type;
-    
-    // Update transactions array
-    transactions = transactions.map(t => 
-      t.id === updatedTransaction.id ? updatedTransaction : t
-    );
-    
-    // Close modal and refresh
-    closeEditTransactionModal();
-    renderTransactions();
-    
-    // Recalculate financial summary
-    calculateFinancialSummary();
-    
-    // Show success notification
-    showNotification('Transaction updated successfully!');
-    
-    // Animate affected cards if type changed
-    if (typeChanged) {
-      if (originalTransaction.entry_type === 'income') {
-        // Changed from income to expense
-        document.querySelector('.income-card').classList.add('bounce');
-        document.querySelector('.expense-card').classList.add('bounce');
-        setTimeout(() => {
-          document.querySelector('.income-card').classList.remove('bounce');
-          document.querySelector('.expense-card').classList.remove('bounce');
-        }, 1000);
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/tracker/entries/${updatedTransaction.id}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        body: JSON.stringify(updatedTransaction),
+      });
+  
+      if (response.ok) {
+        const updatedData = await response.json();
+        transactions = transactions.map(t => (t.id === updatedData.id ? updatedData : t)); // Update local data
+  
+        // Close modal and refresh
+        closeEditTransactionModal();
+        renderTransactions();
+  
+        // Recalculate financial summary
+        calculateFinancialSummary();
+  
+        // Show success notification
+        showNotification('Transaction updated successfully!');
+  
+        // Animate affected cards if type changed
+        const originalTransaction = transactions.find(t => t.id === updatedTransaction.id);
+        const typeChanged = originalTransaction.entry_type !== updatedTransaction.entry_type;
+  
+        if (typeChanged) {
+          if (originalTransaction.entry_type === 'income') {
+            // Changed from income to expense
+            document.querySelector('.income-card').classList.add('bounce');
+            document.querySelector('.expense-card').classList.add('bounce');
+            setTimeout(() => {
+              document.querySelector('.income-card').classList.remove('bounce');
+              document.querySelector('.expense-card').classList.remove('bounce');
+            }, 1000);
+          } else {
+            // Changed from expense to income
+            document.querySelector('.expense-card').classList.add('bounce');
+            document.querySelector('.income-card').classList.add('bounce');
+            setTimeout(() => {
+              document.querySelector('.expense-card').classList.remove('bounce');
+              document.querySelector('.income-card').classList.remove('bounce');
+            }, 1000);
+          }
+        } else {
+          // Just update the relevant card
+          const cardToAnimate = updatedTransaction.entry_type === 'income'
+            ? document.querySelector('.income-card')
+            : document.querySelector('.expense-card');
+  
+          cardToAnimate.classList.add('bounce');
+          setTimeout(() => {
+            cardToAnimate.classList.remove('bounce');
+          }, 1000);
+        }
       } else {
-        // Changed from expense to income
-        document.querySelector('.expense-card').classList.add('bounce');
-        document.querySelector('.income-card').classList.add('bounce');
-        setTimeout(() => {
-          document.querySelector('.expense-card').classList.remove('bounce');
-          document.querySelector('.income-card').classList.remove('bounce');
-        }, 1000);
+        console.error('Failed to update transaction');
       }
-    } else {
-      // Just update the relevant card
-      const cardToAnimate = updatedTransaction.entry_type === 'income' ? 
-        document.querySelector('.income-card') : 
-        document.querySelector('.expense-card');
-      
-      cardToAnimate.classList.add('bounce');
-      setTimeout(() => {
-        cardToAnimate.classList.remove('bounce');
-      }, 1000);
+    } catch (error) {
+      console.error('Error updating transaction:', error);
     }
   }
   
   // Delete transaction
-  function deleteTransaction() {
+  async function deleteTransaction() {
     const id = parseInt(document.getElementById('edit-transaction-id').value);
-    
-    // Get the transaction type before removal
-    const transaction = transactions.find(t => t.id === id);
-    const transactionType = transaction.entry_type;
-    
-    // Remove from transactions array
-    transactions = transactions.filter(t => t.id !== id);
-    
-    // Close modal and refresh
-    closeEditTransactionModal();
-    renderTransactions();
-    
-    // Recalculate financial summary
-    calculateFinancialSummary();
-    
-    // Show success notification
-    showNotification('Transaction deleted successfully!');
-    
-    // Animate the affected card
-    const cardToAnimate = transactionType === 'income' ? 
-      document.querySelector('.income-card') : 
-      document.querySelector('.expense-card');
-    
-    cardToAnimate.classList.add('bounce');
-    setTimeout(() => {
-      cardToAnimate.classList.remove('bounce');
-    }, 1000);
-  }
   
-  // Filter transactions
-  function filterTransactions() {
-    const filterButtons = document.querySelectorAll('.dropdown-content a');
-    
-    filterButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Update active state
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-        
-        // Apply filter
-        const filter = this.getAttribute('data-filter');
-        renderTransactions(filter);
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/tracker/entries/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
       });
-    });
+  
+      if (response.ok) {
+        transactions = transactions.filter(t => t.id !== id); // Remove from local data
+  
+        // Close modal and refresh
+        closeEditTransactionModal();
+        renderTransactions();
+  
+        // Recalculate financial summary
+        calculateFinancialSummary();
+  
+        // Show success notification
+        showNotification('Transaction deleted successfully!');
+  
+        // Animate the affected card
+        const transactionType = transactions.find(t => t.id === id)?.entry_type;
+        const cardToAnimate = transactionType === 'income'
+          ? document.querySelector('.income-card')
+          : document.querySelector('.expense-card');
+  
+        cardToAnimate.classList.add('bounce');
+        setTimeout(() => {
+          cardToAnimate.classList.remove('bounce');
+        }, 1000);
+      } else {
+        console.error('Failed to delete transaction');
+      }
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+    }
   }
   
   // Initialize animation observers

@@ -11,6 +11,23 @@ class RegisterView(CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
+        # Check if the username already exists
+        username = request.data.get('username')
+        if CustomUser.objects.filter(username=username).exists():
+            return Response(
+                {"username": ["This username is already taken."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Check if the email already exists
+        email = request.data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            return Response(
+                {"email": ["This email is already taken."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Proceed with the default behavior if the username and email are unique
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

@@ -172,12 +172,36 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           // Handle errors from the backend
           const errorData = await response.json();
+
+          // Check if the username already exists
+          if (errorData.username) {
+            errors.username.textContent = errorData.username.join(', ');
+            inputs.username.classList.add('invalid');
+            inputs.username.classList.add('shake'); // Add shake animation
+
+            setTimeout(() => {
+              inputs.username.classList.remove('shake');
+            }, 300); // Remove animation after 300ms
+          }
+
+          // Check if the email already exists
+          if (errorData.email) {
+            errors.email.textContent = errorData.email.join(', ');
+            inputs.email.classList.add('invalid');
+            inputs.email.classList.add('shake'); // Add shake animation
+            setTimeout(() => {
+              inputs.email.classList.remove('shake');
+            }, 300); // Remove animation after 300ms
+          }
+
+          // Handle other errors
           Object.keys(errorData).forEach((key) => {
-            if (errors[key]) {
+            if (errors[key] && key !== 'username' && key !== 'email') {
               errors[key].textContent = errorData[key].join(', ');
               inputs[key].classList.add('invalid');
             }
           });
+          
           signupBtn.classList.remove('loading');
         }
       } catch (error) {

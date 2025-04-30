@@ -355,6 +355,19 @@
       transform: translateX(-50%);
     }
   }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+  }
+  
+  input.shake {
+    animation: shake 0.3s ease;
+    border: 1px solid var(--color-error-500); /* Red border during the animation */
+    background-color: rgba(239, 68, 68, 0.1); /* Light red background for better visibility */
+  }
   
   @keyframes swipeRight {
     from {

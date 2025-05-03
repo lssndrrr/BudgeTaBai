@@ -220,4 +220,723 @@
       padding: 2rem;
     }
   }
+
+
+
+/* Responsive Styles */
+
+@media (min-width: 1440px) {
+  .landing-content {
+    flex-direction: column;
+  }
+
+  .landing-header {
+    padding: 1rem 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .logo-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-primary-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .logo-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+
+  .brand {
+    gap: 1rem;
+    padding-left: rem;
+  }
+
+  .cta-buttons {
+    gap: 0rem;
+  }
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary-500);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Black box shadow */
+  }
+  
+  .btn-primary:hover {
+    background-color: #e60000; /* Change background on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker/stronger black box shadow on hover */
+  }
+
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--color-neutral-800);
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--color-neutral-300);
+  }
+  
+  .landing-main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background-size: cover /*Ensures the background covers the entire container */
+  }
+
+  .welcome-message {
+    font-size: 5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 4rem;
+    margin-right: 10rem;
+    margin-left: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    margin-right: 20rem;
+    margin-left: 1.25rem;
+
+  }
+
+  .start-button {
+    margin-left: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .features {
+    padding-left: 1.25rem;
+    font-size: .75rem;
+  }
+
+  .content-right {
+    height: 300px;
+  }
+
+  .content-left {
+    padding: 3rem 50rem 2rem 6rem;
+  }
+}
+
+@media (min-width: 1201px) {
+  .landing-content {
+    flex-direction: column;
+  }
+
+  .landing-header {
+    padding: 1rem 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .logo-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-primary-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .logo-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .brand {
+    gap: 1rem;
+  }
+
+  .cta-buttons {
+    gap: 0rem;
+  }
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary-500);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Black box shadow */
+  }
+  
+  .btn-primary:hover {
+    background-color: #e60000; /* Change background on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker/stronger black box shadow on hover */
+  }
+
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--color-neutral-800);
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--color-neutral-300);
+  }
+  
+  .landing-main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background-size: cover /*Ensures the background covers the entire container */
+  }
+
+  .welcome-message {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 4rem;
+    margin-right: 30rem;
+    margin-left: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    margin-right: 40rem;
+    margin-left: 1.25rem;
+
+  }
+
+  .start-button {
+    margin-left: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .features {
+    padding-left: 1.25rem;
+    font-size: 1rem;
+  }
+
+  .content-right {
+    height: 300px;
+  }
+
+  .content-left {
+    padding: 3rem 28rem 2rem 6rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .landing-content {
+    flex-direction: column;
+  }
+
+  .landing-header {
+    padding: 1rem 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .logo-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-primary-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .logo-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .brand {
+    gap: 1rem;
+  }
+
+  .cta-buttons {
+    gap: 0rem;
+  }
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary-500);
+    color: white;
+    font-size: .75rem;
+    font-weight: bold;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Black box shadow */
+  }
+  
+  .btn-primary:hover {
+    background-color: #e60000; /* Change background on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker/stronger black box shadow on hover */
+  }
+
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--color-neutral-800);
+    font-size: .75rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--color-neutral-300);
+  }
+  
+  .landing-main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background-size: cover /*Ensures the background covers the entire container */
+  }
+
+  .welcome-message {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 4rem;
+    padding: right 20px;
+    margin-left: 1rem;
+  }
+
+  .subtitle {
+    font-size: .75rem;
+    margin-right: 20rem;
+    margin-left: 1.25rem;
+
+  }
+
+  .start-button {
+    margin-left: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .features {
+    padding-left: 1.25rem;
+    font-size: .75rem;
+  }
+
+  .content-right {
+    height: 300px;
+  }
+
+  .content-left {
+    padding: 3rem 28rem 2rem 6rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .landing-content {
+    flex-direction: column;
+  }
+
+  .landing-header {
+    padding: 1rem 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .logo-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-primary-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .logo-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .brand {
+    gap: .5rem;
+  }
+
+  .cta-buttons {
+    gap: 0rem;
+  }
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary-500);
+    color: white;
+    font-size: .75rem;
+    font-weight: bold;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Black box shadow */
+  }
+  
+  .btn-primary:hover {
+    background-color: #e60000; /* Change background on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker/stronger black box shadow on hover */
+  }
+
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--color-neutral-800);
+    font-size: .75rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--color-neutral-300);
+  }
+  
+  .landing-main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background-size: cover /*Ensures the background covers the entire container */
+  }
+
+  .welcome-message {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 4rem;
+    margin-right:25rem;
+    margin-left: 1rem;
+  }
+
+  .subtitle {
+    font-size: .75rem;
+    margin-right: 30rem;
+    margin-left: 1.25rem;
+
+  }
+
+  .start-button {
+    margin-left: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .features {
+    padding-left: 1.25rem;
+    font-size: .75rem;
+  }
+
+  .content-right {
+    height: 300px;
+  }
+
+  .content-left {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-content {
+    flex-direction: column;
+  }
+
+  .landing-header {
+    padding: 1rem 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .logo-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-primary-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .logo-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .brand {
+    gap: .5rem;
+  }
+
+  .cta-buttons {
+    gap: 0rem;
+  }
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary-500);
+    color: white;
+    font-size: .75rem;
+    font-weight: bold;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Black box shadow */
+  }
+  
+  .btn-primary:hover {
+    background-color: #e60000; /* Change background on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker/stronger black box shadow on hover */
+  }
+
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--color-neutral-800);
+    font-size: .75rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--color-neutral-300);
+  }
+  
+  .landing-main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background-size: cover /*Ensures the background covers the entire container */
+  }
+
+  .welcome-message {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 4rem;
+    margin-right:8rem;
+    margin-left: 1rem;
+  }
+
+  .subtitle {
+    font-size: .75rem;
+    margin-right: 20rem;
+    margin-left: 1.25rem;
+
+  }
+
+  .start-button {
+    margin-left: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .features {
+    padding-left: 1.25rem;
+    font-size: .75rem;
+  }
+
+  .content-right {
+    height: 300px;
+  }
+
+  .content-left {
+    padding: 2rem;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+  .landing-content {
+    flex-direction: column;
+  }
+
+  .landing-header {
+    padding: 1rem 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .logo-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-primary-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .logo-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .brand {
+    gap: .5rem;
+  }
+
+  .cta-buttons {
+    gap: 0rem;
+  }
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary-500);
+    color: white;
+    font-size: .75rem;
+    font-weight: bold;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Black box shadow */
+  }
+  
+  .btn-primary:hover {
+    background-color: #e60000; /* Change background on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker/stronger black box shadow on hover */
+  }
+
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--color-neutral-800);
+    font-size: .75rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--color-neutral-300);
+  }
+  
+  .landing-main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+    background: url('../landing/landingBG.png') no-repeat center center/cover; /* Adjusted path */
+    background-size: auto  /*Ensures the background covers the entire container */
+  }
+
+  .welcome-message {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 4rem;
+  }
+
+  .subtitle {
+    font-size: .75rem;
+    margin-right: 5rem;
+  }
+
+  .feature-title {
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .features {
+    padding-left: 1rem;
+    font-size: .75rem;
+  }
+
+  .content-right {
+    height: 300px;
+  }
+
+  .content-left {
+    padding: 2rem;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
   

@@ -29,7 +29,6 @@
         </ul>
       </nav>
       
-
       <div class="sidebar-footer">
         <div class="theme-toggle">
           <span>Theme</span>
@@ -53,18 +52,18 @@
       <header class="main-header">
         <div class="header-left">
           <h2>Overview</h2>
-          <div class="export-filters">
-            <div class="filter-group">
+          <div class="filter-container">
+            <div class="filter-group animated">
               <label for="start-date">Start Date:</label>
-              <input type="date" id="start-date" name="start-date">
+              <input type="date" id="start-date" name="start-date" class="filter-input">
             </div>
-            <div class="filter-group">
+            <div class="filter-group animated">
               <label for="end-date">End Date:</label>
-              <input type="date" id="end-date" name="end-date">
+              <input type="date" id="end-date" name="end-date" class="filter-input">
             </div>
-            <div class="filter-group">
+            <div class="filter-group animated">
               <label for="category">Category:</label>
-              <select id="category" name="category">
+              <select id="category" name="category" class="filter-input">
                 <option value="all">All</option>
                 <option value="food">Food</option>
                 <option value="travel">Travel</option>
@@ -73,30 +72,29 @@
                 <option value="other">Other</option>
               </select>
             </div>
-            <button id="export-csv-button" class="btn-export">
-              <i class="fa-solid fa-file-export"></i> Export CSV
-            </button>
           </div>
         </div>
       </header>
 
       <!-- Charts Section -->
-      <div class="overview-charts" style="display: flex; flex-wrap: wrap; gap: 4rem; padding: 2rem 4rem 3rem 4rem;">
+      <div class="overview-charts">
         <!-- Pie Chart -->
-        <div class="chart-card" style="flex: 1; min-width: 300px;">
-          <h3 style="text-align: center;">Expenses by Category</h3>
+        <div class="chart-card">
+          <h3>Expenses by Category</h3>
           <canvas id="expensesPieChart"></canvas>
         </div>
 
-        <!-- Bar Chart and Breakdown Table (stacked vertically) -->
-        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 2rem;">
-          <div class="chart-card">
-            <h3 style="text-align: center;">Monthly Income vs Expenses</h3>
-            <canvas id="incomeExpenseBarChart"></canvas>
-          </div>
-          </div>
+        <!-- Bar Chart -->
+        <div class="chart-card">
+          <h3>Monthly Income vs Expenses</h3>
+          <canvas id="incomeExpenseBarChart"></canvas>
         </div>
       </div>
+
+      <!-- Export Button -->
+      <button id="export-csv-button" class="btn-export floating">
+        <i class="fas fa-download"></i> Export CSV
+      </button>
     </main>
   </div>
 

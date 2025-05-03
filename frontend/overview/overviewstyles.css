@@ -398,7 +398,6 @@ input:checked + .slider:before {
   gap: var(--space-md);
 }
 
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -437,6 +436,7 @@ input:checked + .slider:before {
 .btn-text:hover {
   color: var(--color-primary-dark);
 }
+
 /* Overview Cards */
 .overview-cards {
   display: grid;
@@ -493,7 +493,6 @@ input:checked + .slider:before {
   margin-bottom: var(--space-sm);
 }
 
-
 .card-header {
   display: flex;
   align-items: center;
@@ -506,13 +505,11 @@ input:checked + .slider:before {
   margin: 8px 0;
 }
 
-
 .amount {
   font-size: var(--font-xxl);
   font-weight: 700;
   margin-bottom: var(--space-sm);
 }
-
 
 /* Filter Dropdown */
 .filter-dropdown {
@@ -714,6 +711,140 @@ input:checked + .slider:before {
 @keyframes slideIn {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+/* Filter Animations */
+.filter-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-group {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUpFade 0.5s ease forwards;
+}
+
+.filter-group:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.filter-group:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.filter-input {
+  padding: 0.5rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.filter-input:hover {
+  border-color: var(--color-primary-light);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Export Button Styles */
+.btn-export {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.btn-export.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+.btn-export:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-export.clicked {
+  pointer-events: none;
+  transform: scale(0.95);
+}
+
+.btn-export.success {
+  background-color: var(--color-success);
+}
+
+.btn-export i {
+  transition: transform 0.3s ease;
+}
+
+.btn-export:hover i {
+  transform: translateY(-2px);
+}
+
+.btn-export.clicked i {
+  animation: spin 1s infinite linear;
+}
+
+/* Animation Keyframes */
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes success {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Custom scrollbar */

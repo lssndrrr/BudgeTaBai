@@ -862,8 +862,10 @@ input:checked + .slider:before {
     box-shadow: var(--shadow-lg);
   }
   
+  /* Modified to keep sidebar partially visible when collapsed */
   .sidebar.collapsed {
-    transform: translateX(calc(-1 * var(--sidebar-width)));
+    transform: translateX(calc(-1 * var(--sidebar-width) + var(--sidebar-width-collapsed)));
+    width: var(--sidebar-width);
   }
   
   .main-content {
@@ -871,7 +873,7 @@ input:checked + .slider:before {
   }
   
   .main-content.expanded {
-    margin-left: 0;
+    margin-left: var(--sidebar-width-collapsed);
   }
   
   .search-container input {
@@ -909,6 +911,15 @@ input:checked + .slider:before {
   .card {
     padding: var(--space-md);
   }
+  
+  /* Enhanced sidebar visibility on mobile */
+  .sidebar.collapsed {
+    transform: translateX(calc(-1 * var(--sidebar-width) + 60px));
+  }
+  
+  .sidebar.collapsed .sidebar-nav li a {
+    padding: var(--space-md) var(--space-sm);
+  }
 }
 
 @media (max-width: 480px) {
@@ -939,6 +950,15 @@ input:checked + .slider:before {
   
   .right-actions {
     flex-direction: column;
+  }
+  
+  /* Further adjust sidebar for smaller screens */
+  .sidebar.collapsed {
+    transform: translateX(calc(-1 * var(--sidebar-width) + 50px));
+  }
+  
+  .sidebar.collapsed .logo i {
+    margin-left: 10px;
   }
 }
 

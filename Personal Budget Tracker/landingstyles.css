@@ -128,7 +128,7 @@
     align-items: stretch;
     justify-content: center;
     padding: 0;
-    background: url('../landing/landingBG.png') no-repeat center center/cover; /* Adjusted path */
+    background: url('./landingBG.png') no-repeat center center/cover; /* Adjusted path */
     background-size: cover; /* Ensures the background covers the entire container */
   }
   
@@ -299,7 +299,7 @@
     align-items: stretch;
     justify-content: center;
     padding: 0;
-    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background: url('./landingBG.png') no-repeat center center/auto; /* Adjusted path */
     background-size: cover /*Ensures the background covers the entire container */
   }
 
@@ -417,7 +417,7 @@
     align-items: stretch;
     justify-content: center;
     padding: 0;
-    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background: url('./landingBG.png') no-repeat center center/auto; /* Adjusted path */
     background-size: cover /*Ensures the background covers the entire container */
   }
 
@@ -535,7 +535,7 @@
     align-items: stretch;
     justify-content: center;
     padding: 0;
-    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background: url('./landingBG.png') no-repeat center center/auto; /* Adjusted path */
     background-size: cover /*Ensures the background covers the entire container */
   }
 
@@ -653,7 +653,7 @@
     align-items: stretch;
     justify-content: center;
     padding: 0;
-    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background: url('./landingBG.png') no-repeat center center/auto; /* Adjusted path */
     background-size: cover /*Ensures the background covers the entire container */
   }
 
@@ -771,7 +771,7 @@
     align-items: stretch;
     justify-content: center;
     padding: 0;
-    background: url('../landing/landingBG.png') no-repeat center center/auto; /* Adjusted path */
+    background: url('./landingBG.png') no-repeat center center/auto; /* Adjusted path */
     background-size: cover /*Ensures the background covers the entire container */
   }
 
@@ -891,7 +891,7 @@
     align-items: stretch;
     justify-content: center;
     padding: 0;
-    background: url('../landing/landingBG.png') no-repeat center center/cover; /* Adjusted path */
+    background: url('./landingBG.png') no-repeat center center/cover; /* Adjusted path */
     background-size: auto  /*Ensures the background covers the entire container */
   }
 

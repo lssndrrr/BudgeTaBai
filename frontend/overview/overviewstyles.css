@@ -550,7 +550,35 @@ input:checked + .slider:before {
   display: block;
 }
 
+/* Export CSV Button */
+.export-csv {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
 
+.btn-export {
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: var(--font-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-export:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-export i {
+  font-size: var(--font-md);
+}
 
 /* Responsive Styles */
 @media (max-width: 1200px) {

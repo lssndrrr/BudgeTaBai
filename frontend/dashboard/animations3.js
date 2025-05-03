@@ -1,3 +1,31 @@
+// Account Info API
+async function fetchAccountInfo() {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/accounts/me/', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    });
+
+    if (response.ok) {
+      const accountData = await response.json();
+
+      // Update the user info in the sidebar
+      const userNameElement = document.querySelector('.user-name');
+      const userEmailElement = document.querySelector('.user-email');
+      const userAvatarElement = document.querySelector('.user-info img');
+
+      if (userNameElement) userNameElement.textContent = accountData.name || 'Unknown';
+      if (userEmailElement) userEmailElement.textContent = accountData.email || 'Unknown email';
+      if (userAvatarElement) userAvatarElement.src = accountData.avatar || userAvatarElement.src;
+    } else {
+      console.error('Failed to fetch account information');
+    }
+  } catch (error) {
+    console.error('Error fetching account information:', error);
+  }
+}
+
 // Data-related functions and variables
 const cssVariables = {};
 const root = document.documentElement;
@@ -29,13 +57,13 @@ function hexToRgb(hex) {
 }
 
 let transactions = [
-  { id: 1, title: 'Salary', amount: 3500, date: '2025-04-15', category: 'income', notes: 'Monthly salary', entry_type: 'income' },
-  { id: 2, title: 'Rent', amount: 1200, date: '2025-04-05', category: 'bills', notes: 'Monthly rent payment', entry_type: 'expense' },
-  { id: 3, title: 'Grocery Shopping', amount: 150.75, date: '2025-04-10', category: 'food', notes: 'Weekly groceries', entry_type: 'expense' },
-  { id: 4, title: 'Freelance Project', amount: 850, date: '2025-04-12', category: 'income', notes: 'Website development for client', entry_type: 'income' },
-  { id: 5, title: 'Dinner Out', amount: 85.50, date: '2025-04-14', category: 'food', notes: 'Dinner with friends', entry_type: 'expense' },
-  { id: 6, title: 'Uber Rides', amount: 32.25, date: '2025-04-13', category: 'travel', notes: 'Transportation for the week', entry_type: 'expense' },
-  { id: 7, title: 'Internet Bill', amount: 59.99, date: '2025-04-08', category: 'bills', notes: 'Monthly internet subscription', entry_type: 'expense' }
+  // { id: 1, title: 'Salary', amount: 3500, date: '2025-04-15', category: 'income', notes: 'Monthly salary', entry_type: 'income' },
+  // { id: 2, title: 'Rent', amount: 1200, date: '2025-04-05', category: 'bills', notes: 'Monthly rent payment', entry_type: 'expense' },
+  // { id: 3, title: 'Grocery Shopping', amount: 150.75, date: '2025-04-10', category: 'food', notes: 'Weekly groceries', entry_type: 'expense' },
+  // { id: 4, title: 'Freelance Project', amount: 850, date: '2025-04-12', category: 'income', notes: 'Website development for client', entry_type: 'income' },
+  // { id: 5, title: 'Dinner Out', amount: 85.50, date: '2025-04-14', category: 'food', notes: 'Dinner with friends', entry_type: 'expense' },
+  // { id: 6, title: 'Uber Rides', amount: 32.25, date: '2025-04-13', category: 'travel', notes: 'Transportation for the week', entry_type: 'expense' },
+  // { id: 7, title: 'Internet Bill', amount: 59.99, date: '2025-04-08', category: 'bills', notes: 'Monthly internet subscription', entry_type: 'expense' }
 ];
 
 function calculateFinancialSummary() {
@@ -181,8 +209,16 @@ function showNotification(message, type = 'success') {
 }
 
 // Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Fetch and display account information
+  await fetchAccountInfo();
+  
   extractCSSVariables();
+
+  // Initialize features
+  renderTransactions();
+  initFilterDropdown(); // Initialize the filter dropdown
+  initObservers();
   
   // Initialize variables
   const sidebar = document.querySelector('.sidebar');
@@ -199,7 +235,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const transactionForm = document.getElementById('transaction-form');
   const editTransactionForm = document.getElementById('edit-transaction-form');
   const transactionsList = document.getElementById('transactions-list');
-  const dateRangeSelect = document.getElementById('date-range-select');
   
   // Financial summary elements
   const incomeAmountElement = document.querySelector('.income-card .amount');
@@ -466,6 +501,29 @@ document.addEventListener('DOMContentLoaded', function() {
   
     // Recalculate financial summary after rendering
     calculateFinancialSummary();
+  }
+
+  // Filter transactions based on selected category
+  function initFilterDropdown() {
+    const filterLinks = document.querySelectorAll('.filter-dropdown .dropdown-content a');
+  
+    filterLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+  
+        // Remove the 'active' class from all links
+        filterLinks.forEach(link => link.classList.remove('active'));
+  
+        // Add the 'active' class to the clicked link
+        link.classList.add('active');
+  
+        // Get the selected filter from the data-filter attribute
+        const selectedFilter = link.getAttribute('data-filter');
+  
+        // Call renderTransactions with the selected filter
+        renderTransactions(selectedFilter);
+      });
+    });
   }
   
   async function saveTransaction(e) {

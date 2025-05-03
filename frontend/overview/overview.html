@@ -41,8 +41,8 @@
         <div class="user-info">
           <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150" alt="User Avatar">
           <div>
-            <p class="user-name">Sarah Johnson</p>
-            <p class="user-email">sarah@example.com</p>
+            <p class="user-name">Unknown</p>
+            <p class="user-email">Unknown Email</p>
           </div>
         </div>
       </div>
@@ -53,15 +53,10 @@
       <header class="main-header">
         <div class="header-left">
           <h2>Overview</h2>
-          <div class="date-range">
-            <i class="fa-solid fa-calendar"></i>
-            <select id="date-range-select">
-              <option value="7">Last 7 days</option>
-              <option value="30" selected>Last 30 days</option>
-              <option value="90">Last 3 months</option>
-              <option value="365">Last year</option>
-              <option value="custom">Custom range</option>
-            </select>
+          <div class="export-csv">
+            <button id="export-csv-button" class="btn-export">
+              <i class="fa-solid fa-file-export"></i> Export CSV
+            </button>
           </div>
         </div>
       </header>

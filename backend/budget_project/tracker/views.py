@@ -5,9 +5,12 @@ from django.utils.timezone import now
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import Entry
 from .serializers import EntrySerializer
+from .models import Budget
+from .serializers import BudgetSerializer
 
 class EntryListCreateView(generics.ListCreateAPIView):
     serializer_class = EntrySerializer
@@ -57,3 +60,21 @@ class ExportCSVView(generics.GenericAPIView):
             writer.writerow([entry.title, entry.amount, entry.entry_type, entry.category, entry.date, entry.notes])
 
         return response
+
+class BudgetView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Retrieve the budget for the authenticated user
+        budget, created = Budget.objects.get_or_create(user=request.user)
+        serializer = BudgetSerializer(budget)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # Update the budget for the authenticated user
+        budget, created = Budget.objects.get_or_create(user=request.user)
+        serializer = BudgetSerializer(budget, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)

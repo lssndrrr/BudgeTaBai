@@ -4,6 +4,8 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .serializers import UserSerializer
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 class RegisterView(CreateAPIView):
     queryset = CustomUser.objects.all()  # Use CustomUser model here
@@ -39,3 +41,14 @@ class RegisterView(CreateAPIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+class AccountInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "name": user.get_full_name() or user.username,
+            "email": user.email,
+            "avatar": user.profile.avatar.url if hasattr(user, 'profile') and user.profile.avatar else None
+        })

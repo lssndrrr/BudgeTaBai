@@ -24,3 +24,12 @@ class Entry(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.amount} ({self.entry_type})"
+
+class Budget(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='budget')
+    weekly_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    monthly_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    annual_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+
+    def __str__(self):
+        return f"Budget for {self.user.username}"

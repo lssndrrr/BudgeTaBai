@@ -40,8 +40,8 @@
         <div class="user-info">
           <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150" alt="User Avatar">
           <div>
-            <p class="user-name">Sarah Johnson</p>
-            <p class="user-email">sarah@example.com</p>
+            <p class="user-name">Unknown</p>
+            <p class="user-email">Unknown Email</p>
           </div>
         </div>
         
@@ -53,18 +53,14 @@
       <header class="main-header">
         <div class="header-left">
           <h2>Settings</h2>
-          <div class="date-range">
-            <i class="fa-solid fa-calendar"></i>
-            <select id="date-range-select">
-              <option value="7">Last 7 days</option>
-              <option value="30" selected>Last 30 days</option>
-              <option value="90">Last 3 months</option>
-              <option value="365">Last year</option>
-              <option value="custom">Custom range</option>
-            </select>
-          </div>
         </div>
       </header>
+
+      <!-- Budget Info Section -->
+      <div class="budget-info">
+        <p>Budget Limit: <span id="budget-limit">$0.00</span></p>
+        <p>Total Expenses: <span id="total-expenses">$0.00</span></p>
+      </div>
 
       <div class="overview-cards">
         <!-- Weekly Card -->
@@ -77,8 +73,8 @@
           </div>
           <div class="card-content">
             <h3>Weekly</h3>
-            <input type="range" id="weekly-slider" min="0" max="10000" value="8540" step="100">
-            <p class="amount">Limit: $<span id="weekly-value">8540</span></p>
+            <input type="range" id="weekly-slider" min="0" max="10000" value="0" step="100">
+            <p class="amount">Limit: $<span id="weekly-value">0</span></p>
           </div>
         </div>
         <!-- Monthly Card -->
@@ -90,8 +86,8 @@
           </div>
           <div class="card-content">
             <h3>Monthly</h3>
-            <input type="range" id="monthly-slider" min="0" max="20000" value="4780" step="100">
-            <p class="amount">Limit: $<span id="monthly-value">4780</span></p>
+            <input type="range" id="monthly-slider" min="0" max="20000" value="0" step="100">
+            <p class="amount">Limit: $<span id="monthly-value">0</span></p>
           </div>
         </div>
         <!-- Annually Card -->
@@ -104,8 +100,8 @@
           </div>
           <div class="card-content">
             <h3>Annually</h3>
-            <input type="range" id="annually-slider" min="0" max="100000" value="3760" step="500">
-            <p class="amount">Limit: $<span id="annually-value">3760</span></p>
+            <input type="range" id="annually-slider" min="0" max="100000" value="0" step="500">
+            <p class="amount">Limit: $<span id="annually-value">0</span></p>
           </div>
         </div>
       </div>

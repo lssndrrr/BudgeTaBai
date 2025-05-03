@@ -841,6 +841,26 @@ input:checked + .slider:before {
   gap: var(--space-md);
 }
 
+.budget-info {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.budget-info p {
+  font-size: var(--font-md);
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.budget-info span {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
 /* Responsive Styles */
 @media (max-width: 1200px) {
   .overview-cards {

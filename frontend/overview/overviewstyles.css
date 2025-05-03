@@ -511,6 +511,13 @@ input:checked + .slider:before {
   margin-bottom: var(--space-sm);
 }
 
+.chart-card {
+  width: 90%;
+  height: 90%;
+  margin-top: var(--space-lg);
+  margin-left: 3.5rem;
+}
+
 /* Filter Dropdown */
 .filter-dropdown {
   position: relative;

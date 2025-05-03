@@ -438,6 +438,32 @@ input:checked + .slider:before {
   transition: all var(--transition-fast);
 }
 
+.btn-logout {
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: var(--font-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
+  position: ;
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2rem;
+  width: 9.5rem;
+  height: 3rem;
+}
+
+.btn-logout:hover {
+  background-color: var(--color-primary-dark);
+}
+
+
 .btn-primary {
   background-color: var(--color-primary);
   color: white;

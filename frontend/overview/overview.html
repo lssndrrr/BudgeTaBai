@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BudgeTaBai Settings</title>
-  <link rel="stylesheet" href="settingsstyles.css" />
+  <title>BudgeTaBai Overview</title>
+  <link rel="stylesheet" href="overviewstyles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="settings">
@@ -23,8 +24,8 @@
       <nav class="sidebar-nav">
         <ul>
           <li><a href="#"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a></li>
-          <li><a href="#"><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a></li>
-          <li class="active"><a href="#"><i class="fa-solid fa-gear"></i> <span>Settings</span></a></li>
+          <li class="active"><a href="#"><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a></li>
+          <li><a href="#"><i class="fa-solid fa-gear"></i> <span>Settings</span></a></li>
         </ul>
       </nav>
 
@@ -43,7 +44,6 @@
             <p class="user-email">sarah@example.com</p>
           </div>
         </div>
-        
       </div>
     </aside>
 
@@ -51,7 +51,7 @@
     <main class="main-content">
       <header class="main-header">
         <div class="header-left">
-          <h2>Settings</h2>
+          <h2>Overview</h2>
           <div class="date-range">
             <i class="fa-solid fa-calendar"></i>
             <select id="date-range-select">
@@ -65,53 +65,26 @@
         </div>
       </header>
 
-      <div class="overview-cards">
-        <!-- Weekly Card -->
-        <div class="card weekly-card">
-          <div class="card-header">
-            <div class="card-icon">
-              <i class="fa-solid fa-calendar-week"></i>
-            </div>
-            
-          </div>
-          <div class="card-content">
-            <h3>Weekly</h3>
-            <input type="range" id="weekly-slider" min="0" max="10000" value="8540" step="100">
-            <p class="amount">Limit: $<span id="weekly-value">8540</span></p>
-          </div>
+      <!-- Charts Section -->
+      <div class="overview-charts" style="display: flex; flex-wrap: wrap; gap: 4rem; padding: 2rem 4rem 3rem 4rem;">
+        <!-- Pie Chart -->
+        <div class="chart-card" style="flex: 1; min-width: 300px;">
+          <h3 style="text-align: center;">Expenses by Category</h3>
+          <canvas id="expensesPieChart"></canvas>
         </div>
-        <!-- Monthly Card -->
-        <div class="card monthly-card">
-          <div class="card-header">
-            <div class="card-icon">
-              <i class="fa-solid fa-calendar-alt"></i>
-            </div>
+
+        <!-- Bar Chart and Breakdown Table (stacked vertically) -->
+        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 2rem;">
+          <div class="chart-card">
+            <h3 style="text-align: center;">Monthly Income vs Expenses</h3>
+            <canvas id="incomeExpenseBarChart"></canvas>
           </div>
-          <div class="card-content">
-            <h3>Monthly</h3>
-            <input type="range" id="monthly-slider" min="0" max="20000" value="4780" step="100">
-            <p class="amount">Limit: $<span id="monthly-value">4780</span></p>
-          </div>
-        </div>
-        <!-- Annually Card -->
-        <div class="card annually-card">
-          <div class="card-header">
-            <div class="card-icon">
-              <i class="fa-solid fa-calendar"></i>
-            </div>
-            
-          </div>
-          <div class="card-content">
-            <h3>Annually</h3>
-            <input type="range" id="annually-slider" min="0" max="100000" value="3760" step="500">
-            <p class="amount">Limit: $<span id="annually-value">3760</span></p>
           </div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- External JavaScript -->
-  <script src="animations5.js"></script>
+  <script src="animations6.js"></script>
 </body>
 </html>

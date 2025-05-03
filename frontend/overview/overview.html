@@ -53,7 +53,26 @@
       <header class="main-header">
         <div class="header-left">
           <h2>Overview</h2>
-          <div class="export-csv">
+          <div class="export-filters">
+            <div class="filter-group">
+              <label for="start-date">Start Date:</label>
+              <input type="date" id="start-date" name="start-date">
+            </div>
+            <div class="filter-group">
+              <label for="end-date">End Date:</label>
+              <input type="date" id="end-date" name="end-date">
+            </div>
+            <div class="filter-group">
+              <label for="category">Category:</label>
+              <select id="category" name="category">
+                <option value="all">All</option>
+                <option value="food">Food</option>
+                <option value="travel">Travel</option>
+                <option value="bills">Bills</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
             <button id="export-csv-button" class="btn-export">
               <i class="fa-solid fa-file-export"></i> Export CSV
             </button>

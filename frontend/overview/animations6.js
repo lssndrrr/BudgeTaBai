@@ -144,8 +144,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Export CSV Button
   document.getElementById('export-csv-button').addEventListener('click', async () => {
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+    const category = document.getElementById('category').value;
+  
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    if (category && category !== 'all') params.append('category', category);
+  
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/tracker/entries/export/', {
+      const response = await fetch(`http://127.0.0.1:8000/api/tracker/entries/export/?${params.toString()}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,

@@ -106,9 +106,19 @@
         </div>
       </div>
 
-      <button id="export-csv-button" class="btn-logout floating">
+      <button id="logout-button" class="btn-logout floating">
         Log out
       </button>
+
+      <div id="logout-modal" class="modal hidden">
+        <div class="modal-content">
+          <p>Are you sure you want to log out?</p>
+          <div class="modal-actions">
+            <button id="confirm-logout" class="btn-confirm">Yes, Log Out</button>
+            <button id="cancel-logout" class="btn-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
 
     </main>
   </div>

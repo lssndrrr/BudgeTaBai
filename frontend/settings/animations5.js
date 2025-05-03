@@ -287,67 +287,67 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSliders();
 
   // Logout API Logic
-const logoutButton = document.getElementById('logout-button');
-const logoutModal = document.getElementById('logout-modal');
-const confirmLogoutButton = document.getElementById('confirm-logout');
-const cancelLogoutButton = document.getElementById('cancel-logout');
+  const logoutButton = document.getElementById('logout-button');
+  const logoutModal = document.getElementById('logout-modal');
+  const confirmLogoutButton = document.getElementById('confirm-logout');
+  const cancelLogoutButton = document.getElementById('cancel-logout');
 
-if (logoutButton) {
-  logoutButton.addEventListener('click', () => {
-    // Show the logout confirmation modal
-    logoutModal.classList.add('visible');
-  });
+  if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+      // Show the logout confirmation modal
+      logoutModal.classList.add('visible');
+    });
 
-  cancelLogoutButton.addEventListener('click', () => {
-    // Hide the modal when cancel is clicked
-    logoutModal.classList.remove('visible');
-  });
+    cancelLogoutButton.addEventListener('click', () => {
+      // Hide the modal when cancel is clicked
+      logoutModal.classList.remove('visible');
+    });
 
-  confirmLogoutButton.addEventListener('click', async () => {
-    try {
-      const refreshToken = localStorage.getItem('refresh_token'); // Retrieve the refresh token
+    confirmLogoutButton.addEventListener('click', async () => {
+      try {
+        const refreshToken = localStorage.getItem('refresh_token'); // Retrieve the refresh token
 
-      if (!refreshToken) {
-        // Clear all tokens and redirect to login
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        alert('Session expired. Please log in again.');
-        window.location.href = '../login/login.html';
-        return;
+        if (!refreshToken) {
+          // Clear all tokens and redirect to login
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          alert('Session expired. Please log in again.');
+          window.location.href = '../login/login.html';
+          return;
+        }
+
+        const response = await fetch('http://127.0.0.1:8000/api/accounts/logout/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refresh: refreshToken }), // Include the refresh token in the body
+        });
+
+        if (response.ok) {
+          // Clear tokens from localStorage
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+
+          // Hide the modal
+          logoutModal.classList.remove('visible');
+
+          // Show a success alert
+          alert('Logged out successfully.');
+
+          // Redirect to the login page
+          window.location.href = '../login/login.html';
+        } else {
+          console.error('Failed to log out');
+          alert('Failed to log out. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error during logout:', error);
+        alert('An error occurred while logging out. Please try again.');
       }
-
-      const response = await fetch('http://127.0.0.1:8000/api/accounts/logout/', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refresh: refreshToken }), // Include the refresh token in the body
-      });
-
-      if (response.ok) {
-        // Clear tokens from localStorage
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-
-        // Hide the modal
-        logoutModal.classList.remove('visible');
-
-        // Show a success alert
-        alert('Logged out successfully.');
-
-        // Redirect to the login page
-        window.location.href = '../login/login.html';
-      } else {
-        console.error('Failed to log out');
-        alert('Failed to log out. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
-      alert('An error occurred while logging out. Please try again.');
-    }
-  });
-}
+    });
+  }
   
   // Toggle sidebar
   function toggleSidebar() {

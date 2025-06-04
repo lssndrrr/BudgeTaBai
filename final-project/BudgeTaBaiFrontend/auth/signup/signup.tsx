@@ -20,7 +20,7 @@ import { useSignupAnimations } from './signupAnimations';
 const { width } = Dimensions.get('window');
 
 const SignupScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation() as any;
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',

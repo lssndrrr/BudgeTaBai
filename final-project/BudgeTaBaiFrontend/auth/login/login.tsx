@@ -21,7 +21,7 @@ import { useLoginAnimations } from './loginAnimations';
 const { width } = Dimensions.get('window');
 
 const LoginScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation() as any;
   const [formData, setFormData] = useState({
     username: '',
     password: ''

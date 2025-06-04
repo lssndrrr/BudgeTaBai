@@ -24,7 +24,7 @@ import OverviewScreen from './overview/overview';
 import SettingsScreen from './settings/settings';
 
 // Define the navigation stack types
-type RootStackParamList = {
+export type RootStackParamList = {
   Landing: undefined;
   Login: undefined;
   Signup: undefined;

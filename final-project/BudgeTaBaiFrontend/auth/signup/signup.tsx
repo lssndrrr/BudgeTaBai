@@ -10,14 +10,14 @@ import {
   Easing,
   Dimensions,
   Alert,
-  Platform
+  ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import signupStyles from './signupStyles';
 import { useSignupAnimations } from './signupAnimations';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -38,7 +38,6 @@ const SignupScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Animation hooks
   const {
     fadeAnim,
     translateYAnim,
@@ -47,84 +46,105 @@ const SignupScreen = () => {
     circle2Pos,
     circle3Pos,
     handleMouseMove,
-    shakeAnimation
+    shakeAnimation,
+    triggerShake
   } = useSignupAnimations();
 
-  const togglePassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when typing
-    if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+  const validateField = (name: string, value: string) => {
+    switch (name) {
+      case 'firstName':
+      case 'lastName':
+        return value.trim() ? '' : 'This field is required';
+      case 'username':
+        if (!value.trim()) return 'Username is required';
+        if (value.length < 4) return 'Must be at least 4 characters';
+        if (!/^[a-zA-Z0-9_]+$/.test(value)) return 'Only letters, numbers and _';
+        return '';
+      case 'email':
+        if (!value.trim()) return 'Email is required';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email format';
+        return '';
+      case 'password':
+        if (!value) return 'Password is required';
+        if (value.length < 8) return 'Must be at least 8 characters';
+        return '';
+      default:
+        return '';
     }
   };
 
-  const validate = () => {
-    let valid = true;
+  const validateForm = () => {
+    let isValid = true;
     const newErrors = { ...errors };
 
-    // First name validation
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-      valid = false;
-    }
-
-    // Last name validation
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-      valid = false;
-    }
-
-    // Username validation
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-      valid = false;
-    } else if (formData.username.length < 4) {
-      newErrors.username = 'Username must be at least 4 characters';
-      valid = false;
-    }
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-      valid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-      valid = false;
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-      valid = false;
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-      valid = false;
-    }
+    Object.keys(formData).forEach(key => {
+      const error = validateField(key, formData[key as keyof typeof formData]);
+      newErrors[key as keyof typeof newErrors] = error;
+      if (error) isValid = false;
+    });
 
     setErrors(newErrors);
-    return valid;
+    return isValid;
   };
 
   const handleSignup = async () => {
-    if (!validate()) return;
+    if (!validateForm()) {
+      triggerShake();
+      return;
+    }
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // On successful signup
-      Alert.alert('Success', 'Account created successfully!');
-      navigation.navigate('Login');
+      const response = await fetch('http://127.0.0.1:8000/accounts/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert(
+          'Account Created', 
+          'Your account has been created successfully!',
+          [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+        );
+      } else {
+        // Handle backend validation errors
+        const backendErrors: Record<string, string[]> = data;
+        const formattedErrors = { ...errors };
+
+        Object.keys(backendErrors).forEach(key => {
+          if (key in formattedErrors) {
+            formattedErrors[key as keyof typeof formattedErrors] = 
+              backendErrors[key].join(', ');
+          }
+        });
+
+        setErrors(formattedErrors);
+        throw new Error('Registration failed');
+      }
     } catch (error) {
-      Alert.alert('Error', 'Failed to create account. Please try again.');
+      if (error instanceof Error) {
+        Alert.alert('Registration Error', error.message);
+      } else {
+        Alert.alert('Registration Error', 'An unknown error occurred');
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -133,29 +153,23 @@ const SignupScreen = () => {
       onMoveShouldSetResponder={() => true}
       onResponderMove={handleMouseMove}
     >
-      {/* Parallax circles (desktop only) */}
+      {/* Parallax circles */}
       {width >= 768 && (
         <>
           <Animated.View style={[
             signupStyles.circle,
             signupStyles.circle1,
-            {
-              transform: circle1Pos.getTranslateTransform()
-            }
+            { transform: circle1Pos.getTranslateTransform() }
           ]} />
           <Animated.View style={[
             signupStyles.circle,
             signupStyles.circle2,
-            {
-              transform: circle2Pos.getTranslateTransform()
-            }
+            { transform: circle2Pos.getTranslateTransform() }
           ]} />
           <Animated.View style={[
             signupStyles.circle,
             signupStyles.circle3,
-            {
-              transform: circle3Pos.getTranslateTransform()
-            }
+            { transform: circle3Pos.getTranslateTransform() }
           ]} />
         </>
       )}
@@ -190,10 +204,7 @@ const SignupScreen = () => {
         {/* Signup Card */}
         <Animated.View style={[
           signupStyles.signupCard,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateY: translateYAnim }]
-          }
+          { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
         ]}>
           <View style={signupStyles.brand}>
             <View style={signupStyles.logoCircle}>
@@ -204,20 +215,14 @@ const SignupScreen = () => {
 
           <Animated.Text style={[
             signupStyles.heading,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             Create Account
           </Animated.Text>
           
           <Animated.Text style={[
             signupStyles.subtitle,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             Join us and start managing your finances today
           </Animated.Text>
@@ -226,10 +231,7 @@ const SignupScreen = () => {
           <View style={signupStyles.nameGroup}>
             <Animated.View style={[
               signupStyles.formGroup,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: translateYAnim }]
-              }
+              { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
             ]}>
               <Text style={signupStyles.label}>First Name</Text>
               <View style={signupStyles.inputWrapper}>
@@ -247,7 +249,10 @@ const SignupScreen = () => {
                   ]}
                   placeholder="Juan"
                   value={formData.firstName}
-                  onChangeText={(text) => handleChange('firstName', text)}
+                  onChangeText={(text) => {
+                    setFormData({...formData, firstName: text});
+                    if (errors.firstName) setErrors({...errors, firstName: ''});
+                  }}
                 />
               </View>
               {errors.firstName ? (
@@ -257,10 +262,7 @@ const SignupScreen = () => {
 
             <Animated.View style={[
               signupStyles.formGroup,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: translateYAnim }]
-              }
+              { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
             ]}>
               <Text style={signupStyles.label}>Last Name</Text>
               <View style={signupStyles.inputWrapper}>
@@ -278,7 +280,10 @@ const SignupScreen = () => {
                   ]}
                   placeholder="Cruz"
                   value={formData.lastName}
-                  onChangeText={(text) => handleChange('lastName', text)}
+                  onChangeText={(text) => {
+                    setFormData({...formData, lastName: text});
+                    if (errors.lastName) setErrors({...errors, lastName: ''});
+                  }}
                 />
               </View>
               {errors.lastName ? (
@@ -290,10 +295,7 @@ const SignupScreen = () => {
           {/* Username Input */}
           <Animated.View style={[
             signupStyles.formGroup,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <Text style={signupStyles.label}>Username</Text>
             <View style={signupStyles.inputWrapper}>
@@ -311,7 +313,10 @@ const SignupScreen = () => {
                 ]}
                 placeholder="juancruz143"
                 value={formData.username}
-                onChangeText={(text) => handleChange('username', text)}
+                onChangeText={(text) => {
+                  setFormData({...formData, username: text});
+                  if (errors.username) setErrors({...errors, username: ''});
+                }}
                 autoCapitalize="none"
               />
             </View>
@@ -323,10 +328,7 @@ const SignupScreen = () => {
           {/* Email Input */}
           <Animated.View style={[
             signupStyles.formGroup,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <Text style={signupStyles.label}>Email</Text>
             <View style={signupStyles.inputWrapper}>
@@ -344,7 +346,10 @@ const SignupScreen = () => {
                 ]}
                 placeholder="juan@example.com"
                 value={formData.email}
-                onChangeText={(text) => handleChange('email', text)}
+                onChangeText={(text) => {
+                  setFormData({...formData, email: text});
+                  if (errors.email) setErrors({...errors, email: ''});
+                }}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -357,10 +362,7 @@ const SignupScreen = () => {
           {/* Password Input */}
           <Animated.View style={[
             signupStyles.formGroup,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <Text style={signupStyles.label}>Password</Text>
             <View style={signupStyles.inputWrapper}>
@@ -379,7 +381,10 @@ const SignupScreen = () => {
                 placeholder="Create a strong password"
                 secureTextEntry={!showPassword}
                 value={formData.password}
-                onChangeText={(text) => handleChange('password', text)}
+                onChangeText={(text) => {
+                  setFormData({...formData, password: text});
+                  if (errors.password) setErrors({...errors, password: ''});
+                }}
               />
               <TouchableOpacity 
                 style={signupStyles.togglePassword}
@@ -405,7 +410,7 @@ const SignupScreen = () => {
               disabled={isLoading}
             >
               {isLoading ? (
-                <FontAwesome name="spinner" size={20} color="white" />
+                <ActivityIndicator color="white" />
               ) : (
                 <Text style={signupStyles.btnSignupText}>Create Account</Text>
               )}
@@ -415,10 +420,7 @@ const SignupScreen = () => {
           {/* Login Prompt */}
           <Animated.View style={[
             signupStyles.loginPrompt,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <Text style={signupStyles.loginText}>
               Already have an account?{' '}

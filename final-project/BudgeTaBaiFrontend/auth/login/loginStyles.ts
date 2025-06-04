@@ -111,6 +111,12 @@ export default StyleSheet.create({
     marginTop: 4,
     minHeight: 18,
   },
+  inputError: {
+    color: '#EF4444',
+    fontSize: 12,
+    marginTop: 4,
+    minHeight: 18,
+  },
   passwordLabelGroup: {
     flexDirection: 'row',
     justifyContent: 'space-between',

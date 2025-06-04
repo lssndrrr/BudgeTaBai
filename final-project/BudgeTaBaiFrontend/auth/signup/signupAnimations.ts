@@ -12,25 +12,24 @@ export const useSignupAnimations = () => {
   const circle3Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
   const shakeAnimation = useRef(new Animated.Value(0)).current;
 
-  // Staggered fade-in animation for elements
   const animateElements = () => {
-    const elements = [
-      { ref: fadeAnim, duration: 500, delay: 0 },
-      { ref: translateYAnim, duration: 500, delay: 100 },
-    ];
-
-    elements.forEach((element, index) => {
-      Animated.timing(element.ref, {
-        toValue: index === 0 ? 1 : 0,
-        duration: element.duration,
-        delay: element.delay,
+    // Staggered animations for form elements
+    Animated.stagger(100, [
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
         useNativeDriver: true,
         easing: Easing.ease
-      }).start();
-    });
+      }),
+      Animated.timing(translateYAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+        easing: Easing.ease
+      })
+    ]).start();
   };
 
-  // Pulse animation for buttons
   const startPulseAnimation = () => {
     Animated.loop(
       Animated.sequence([
@@ -49,43 +48,11 @@ export const useSignupAnimations = () => {
     ).start();
   };
 
-  // Shake animation for invalid inputs
-  const triggerShake = () => {
-    Animated.sequence([
-      Animated.timing(shakeAnimation, {
-        toValue: -5,
-        duration: 50,
-        useNativeDriver: true
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: 5,
-        duration: 50,
-        useNativeDriver: true
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: -5,
-        duration: 50,
-        useNativeDriver: true
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: 5,
-        duration: 50,
-        useNativeDriver: true
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: 0,
-        duration: 50,
-        useNativeDriver: true
-      })
-    ]).start();
-  };
-
-  // Parallax effect for circles
   const handleMouseMove = (e: any) => {
     if (width >= 768) {
       const { locationX, locationY } = e.nativeEvent;
       const x = locationX / width;
-      const y = locationY / (width * 0.8); // Adjust for mobile aspect ratio
+      const y = locationY / (width * 0.8);
 
       Animated.parallel([
         Animated.spring(circle1Pos, {
@@ -102,6 +69,31 @@ export const useSignupAnimations = () => {
         })
       ]).start();
     }
+  };
+
+  const triggerShake = () => {
+    Animated.sequence([
+      Animated.timing(shakeAnimation, {
+        toValue: 10,
+        duration: 50,
+        useNativeDriver: true
+      }),
+      Animated.timing(shakeAnimation, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true
+      }),
+      Animated.timing(shakeAnimation, {
+        toValue: 10,
+        duration: 100,
+        useNativeDriver: true
+      }),
+      Animated.timing(shakeAnimation, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true
+      })
+    ]).start();
   };
 
   useEffect(() => {

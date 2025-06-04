@@ -10,24 +10,30 @@ import {
   Easing,
   Dimensions,
   Alert,
-  Platform
+  ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 import loginStyles from './loginStyles';
 import { useLoginAnimations } from './loginAnimations';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState({
+    username: '',
+    password: ''
+  });
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Animation hooks
   const {
     fadeAnim,
     translateYAnim,
@@ -35,27 +41,104 @@ const LoginScreen = () => {
     circle1Pos,
     circle2Pos,
     circle3Pos,
-    handleMouseMove
+    handleMouseMove,
+    shakeAnimation,
+    triggerShake
   } = useLoginAnimations();
 
-  const togglePassword = () => {
-    setShowPassword(!showPassword);
+  useEffect(() => {
+    // Load remembered credentials if any
+    const loadCredentials = async () => {
+      try {
+        const savedUsername = await SecureStore.getItemAsync('username');
+        const savedPassword = await SecureStore.getItemAsync('password');
+        if (savedUsername && savedPassword) {
+          setFormData({
+            username: savedUsername,
+            password: savedPassword
+          });
+          setRememberMe(true);
+        }
+      } catch (error) {
+        console.error('Error loading credentials:', error);
+      }
+    };
+    loadCredentials();
+  }, []);
+
+  const validate = () => {
+    let valid = true;
+    const newErrors = { username: '', password: '' };
+
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+      valid = false;
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+      valid = false;
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const handleLogin = async () => {
+    if (!validate()) {
+      triggerShake();
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // On successful login
-      Alert.alert('Success', 'Login successful!');
-      navigation.navigate('Dashboard');
+      const response = await fetch('http://127.0.0.1:8000/accounts/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store tokens securely
+        await SecureStore.setItemAsync('access_token', data.access);
+        await SecureStore.setItemAsync('refresh_token', data.refresh);
+
+        // Remember credentials if checkbox is checked
+        if (rememberMe) {
+          await SecureStore.setItemAsync('username', formData.username);
+          await SecureStore.setItemAsync('password', formData.password);
+        } else {
+          await SecureStore.deleteItemAsync('username');
+          await SecureStore.deleteItemAsync('password');
+        }
+
+        navigation.navigate('Dashboard');
+      } else {
+        throw new Error(data.detail || 'Invalid credentials');
+      }
     } catch (error) {
-      Alert.alert('Error', 'Invalid credentials');
+      if (error instanceof Error) {
+        Alert.alert('Login Failed', error.message);
+      } else {
+        Alert.alert('Login Failed', 'An unknown error occurred');
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -64,29 +147,23 @@ const LoginScreen = () => {
       onMoveShouldSetResponder={() => true}
       onResponderMove={handleMouseMove}
     >
-      {/* Parallax circles (desktop only) */}
+      {/* Parallax circles */}
       {width >= 768 && (
         <>
           <Animated.View style={[
             loginStyles.circle,
             loginStyles.circle1,
-            {
-              transform: circle1Pos.getTranslateTransform()
-            }
+            { transform: circle1Pos.getTranslateTransform() }
           ]} />
           <Animated.View style={[
             loginStyles.circle,
             loginStyles.circle2,
-            {
-              transform: circle2Pos.getTranslateTransform()
-            }
+            { transform: circle2Pos.getTranslateTransform() }
           ]} />
           <Animated.View style={[
             loginStyles.circle,
             loginStyles.circle3,
-            {
-              transform: circle3Pos.getTranslateTransform()
-            }
+            { transform: circle3Pos.getTranslateTransform() }
           ]} />
         </>
       )}
@@ -95,10 +172,7 @@ const LoginScreen = () => {
         {/* Login Card */}
         <Animated.View style={[
           loginStyles.loginCard,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateY: translateYAnim }]
-          }
+          { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
         ]}>
           <View style={loginStyles.brand}>
             <View style={loginStyles.logoCircle}>
@@ -109,20 +183,14 @@ const LoginScreen = () => {
 
           <Animated.Text style={[
             loginStyles.heading,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             Hello!
           </Animated.Text>
           
           <Animated.Text style={[
             loginStyles.subtitle,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             Enter your credentials to access your account
           </Animated.Text>
@@ -130,10 +198,7 @@ const LoginScreen = () => {
           {/* Username Input */}
           <Animated.View style={[
             loginStyles.formGroup,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <Text style={loginStyles.label}>Username</Text>
             <View style={loginStyles.inputWrapper}>
@@ -144,23 +209,29 @@ const LoginScreen = () => {
                 style={loginStyles.inputIcon} 
               />
               <TextInput
-                style={loginStyles.input}
+                style={[
+                  loginStyles.input,
+                  errors.username && loginStyles.inputError,
+                  { transform: [{ translateX: shakeAnimation }] }
+                ]}
                 placeholder="Enter your username"
-                value={username}
-                onChangeText={setUsername}
+                value={formData.username}
+                onChangeText={(text) => {
+                  setFormData({...formData, username: text});
+                  if (errors.username) setErrors({...errors, username: ''});
+                }}
                 autoCapitalize="none"
               />
             </View>
-            <Text style={loginStyles.errorMessage}></Text>
+            {errors.username ? (
+              <Text style={loginStyles.errorMessage}>{errors.username}</Text>
+            ) : null}
           </Animated.View>
 
           {/* Password Input */}
           <Animated.View style={[
             loginStyles.formGroup,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <View style={loginStyles.passwordLabelGroup}>
               <Text style={loginStyles.label}>Password</Text>
@@ -176,11 +247,18 @@ const LoginScreen = () => {
                 style={loginStyles.inputIcon} 
               />
               <TextInput
-                style={loginStyles.input}
+                style={[
+                  loginStyles.input,
+                  errors.password && loginStyles.inputError,
+                  { transform: [{ translateX: shakeAnimation }] }
+                ]}
                 placeholder="Enter your password"
                 secureTextEntry={!showPassword}
-                value={password}
-                onChangeText={setPassword}
+                value={formData.password}
+                onChangeText={(text) => {
+                  setFormData({...formData, password: text});
+                  if (errors.password) setErrors({...errors, password: ''});
+                }}
               />
               <TouchableOpacity 
                 style={loginStyles.togglePassword}
@@ -193,16 +271,15 @@ const LoginScreen = () => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={loginStyles.errorMessage}></Text>
+            {errors.password ? (
+              <Text style={loginStyles.errorMessage}>{errors.password}</Text>
+            ) : null}
           </Animated.View>
 
           {/* Remember Me */}
           <Animated.View style={[
             loginStyles.rememberGroup,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <TouchableOpacity 
               style={loginStyles.checkboxWrapper}
@@ -228,7 +305,7 @@ const LoginScreen = () => {
               disabled={isLoading}
             >
               {isLoading ? (
-                <FontAwesome name="spinner" size={20} color="white" />
+                <ActivityIndicator color="white" />
               ) : (
                 <Text style={loginStyles.btnLoginText}>Log In</Text>
               )}
@@ -238,10 +315,7 @@ const LoginScreen = () => {
           {/* Signup Prompt */}
           <Animated.View style={[
             loginStyles.signupPrompt,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: translateYAnim }]
-            }
+            { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }
           ]}>
             <Text style={loginStyles.signupText}>
               Don't have an account?{' '}

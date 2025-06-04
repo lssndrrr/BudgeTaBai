@@ -11,6 +11,7 @@ import {
   Platform
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
@@ -22,17 +23,35 @@ import DashboardScreen from './dashboard/dashboard';
 import OverviewScreen from './overview/overview';
 import SettingsScreen from './settings/settings';
 
-const Stack = createStackNavigator();
+// Define the navigation stack types
+type RootStackParamList = {
+  Landing: undefined;
+  Login: undefined;
+  Signup: undefined;
+  Dashboard: undefined;
+  Overview: undefined;
+  Settings: undefined;
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 const { width, height } = Dimensions.get('window');
 
 const LandingPage = () => {
-  const navigation = useNavigation();
+  type NavigationProps = StackNavigationProp<RootStackParamList>;
+  const navigation = useNavigation<NavigationProps>();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(20)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const circle1Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
   const circle2Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
   const circle3Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+
+  useEffect(() => {
+    setTimeout(() => {
+      animateElements();
+    }, 100);
+  }, []);
+
 
   // Elements to animate
   const animateElements = () => {

@@ -1,9 +1,19 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  ScrollView, 
+  Animated, 
+  Easing,
+  Dimensions,
+  Platform
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 
 // Import screens
 import LoginScreen from './auth/login/login';
@@ -13,33 +23,150 @@ import OverviewScreen from './overview/overview';
 import SettingsScreen from './settings/settings';
 
 const Stack = createStackNavigator();
+const { width, height } = Dimensions.get('window');
 
 const LandingPage = () => {
   const navigation = useNavigation();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const translateYAnim = useRef(new Animated.Value(20)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const circle1Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const circle2Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const circle3Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+
+  // Elements to animate
+  const animateElements = () => {
+    const elements = [
+      { ref: fadeAnim, duration: 600, delay: 0 },
+      { ref: translateYAnim, duration: 600, delay: 100 },
+      // Add more elements as needed
+    ];
+
+    elements.forEach((element, index) => {
+      Animated.timing(element.ref, {
+        toValue: index === 0 ? 1 : 0,
+        duration: element.duration,
+        delay: element.delay + (index * 100),
+        useNativeDriver: true,
+        easing: Easing.ease
+      }).start();
+    });
+  };
+
+  // Pulse animation for buttons
+  const startPulseAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.02,
+          duration: 150,
+          useNativeDriver: true
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 150,
+          useNativeDriver: true
+        })
+      ])
+    ).start();
+  };
+
+  // Parallax effect for circles
+  const setupParallax = () => {
+    if (width >= 768) {
+      // Set initial positions
+      circle1Pos.setValue({ x: 0, y: 0 });
+      circle2Pos.setValue({ x: 0, y: 0 });
+      circle3Pos.setValue({ x: 0, y: 0 });
+    }
+  };
+
+  const handleMouseMove = (e: any) => {
+    if (width >= 768) {
+      const { locationX, locationY } = e.nativeEvent;
+      const x = locationX / width;
+      const y = locationY / height;
+
+      Animated.parallel([
+        Animated.spring(circle1Pos, {
+          toValue: { x: x * 30, y: y * -30 },
+          useNativeDriver: true
+        }),
+        Animated.spring(circle2Pos, {
+          toValue: { x: x * -20, y: y * 20 },
+          useNativeDriver: true
+        }),
+        Animated.spring(circle3Pos, {
+          toValue: { x: x * 15, y: y * -15 },
+          useNativeDriver: true
+        })
+      ]).start();
+    }
+  };
 
   useEffect(() => {
-    // Animation logic similar to your animations4.js
-    // React Native has its own animation system (Animated API)
+    animateElements();
+    startPulseAnimation();
+    setupParallax();
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView 
+      contentContainerStyle={styles.container}
+      onMoveShouldSetResponder={() => true}
+      onResponderMove={handleMouseMove}
+    >
+      {/* Design elements (circles) */}
+      {width >= 768 && (
+        <>
+          <Animated.View style={[
+            styles.circle,
+            styles.circle1,
+            {
+              transform: circle1Pos.getTranslateTransform()
+            }
+          ]} />
+          <Animated.View style={[
+            styles.circle,
+            styles.circle2,
+            {
+              transform: circle2Pos.getTranslateTransform()
+            }
+          ]} />
+          <Animated.View style={[
+            styles.circle,
+            styles.circle3,
+            {
+              transform: circle3Pos.getTranslateTransform()
+            }
+          ]} />
+        </>
+      )}
+
       {/* Header */}
-      <View style={styles.header}>
+      <Animated.View style={[
+        styles.header,
+        {
+          opacity: fadeAnim,
+          transform: [{ translateY: translateYAnim }]
+        }
+      ]}>
         <View style={styles.brand}>
           <View style={styles.logoCircle}>
-            <FontAwesome name="wallet" size={20} color="white" />
+            <FontAwesome5 name="wallet" size={20} color="white" />
           </View>
           <Text style={styles.logoTitle}>BudgeTaBai</Text>
         </View>
 
         <View style={styles.ctaButtons}>
-          <TouchableOpacity 
-            style={styles.btnPrimary}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={styles.btnPrimaryText}>Log In</Text>
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+            <TouchableOpacity 
+              style={styles.btnPrimary}
+              onPress={() => navigation.navigate('Login')}
+            >
+              <Text style={styles.btnPrimaryText}>Log In</Text>
+            </TouchableOpacity>
+          </Animated.View>
           <TouchableOpacity 
             style={styles.btnSecondary}
             onPress={() => navigation.navigate('Signup')}
@@ -47,38 +174,81 @@ const LandingPage = () => {
             <Text style={styles.btnSecondaryText}>Create Account</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Main Content */}
       <View style={styles.mainContent}>
         <View style={styles.contentLeft}>
-          <Text style={styles.welcomeMessage}>Welcome to BudgeTaBai!</Text>
-          <Text style={styles.subtitle}>
-            Track your finances with ease. Stay on top of your spending, set goals, and budget smarter!
-          </Text>
+          <Animated.Text style={[
+            styles.welcomeMessage,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: translateYAnim }]
+            }
+          ]}>
+            Welcome to BudgeTaBai!
+          </Animated.Text>
           
-          <View style={styles.startButton}>
-            <TouchableOpacity 
-              style={styles.btnPrimary}
-              onPress={() => navigation.navigate('Login')}
-            >
-              <Text style={styles.btnPrimaryText}>Let's start!</Text>
-            </TouchableOpacity>
-          </View>
+          <Animated.Text style={[
+            styles.subtitle,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: translateYAnim }]
+            }
+          ]}>
+            Track your finances with ease. Stay on top of your spending, set goals, and budget smarter!
+          </Animated.Text>
+          
+          <Animated.View style={[
+            styles.startButton,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: translateYAnim }]
+            }
+          ]}>
+            <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+              <TouchableOpacity 
+                style={styles.btnPrimary}
+                onPress={() => navigation.navigate('Login')}
+              >
+                <Text style={styles.btnPrimaryText}>Let's start!</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </Animated.View>
 
-          <View style={styles.featureList}>
+          <Animated.View style={[
+            styles.featureList,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: translateYAnim }]
+            }
+          ]}>
             <Text style={styles.featureTitle}>Features:</Text>
             {[
               { icon: 'chart-line', text: 'Real-time expense tracking' },
               { icon: 'piggy-bank', text: 'Budget planning and tracking' },
               { icon: 'bell', text: 'Smart notifications and reminders' }
             ].map((feature, index) => (
-              <View key={index} style={styles.featureItem}>
-                <FontAwesome name={feature.icon} size={16} color="#FFB800" />
+              <Animated.View 
+                key={index}
+                style={[
+                  styles.featureItem,
+                  {
+                    opacity: fadeAnim,
+                    transform: [{ 
+                      translateY: Animated.add(
+                        translateYAnim,
+                        new Animated.Value(index * 20)
+                      )
+                    }]
+                  }
+                ]}
+              >
+                <FontAwesome5 name={feature.icon} size={16} color="#FFB800" />
                 <Text style={styles.featureText}>{feature.text}</Text>
-              </View>
+              </Animated.View>
             ))}
-          </View>
+          </Animated.View>
         </View>
       </View>
     </ScrollView>
@@ -104,6 +274,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#F3F4F6',
+    minHeight: height,
   },
   header: {
     flexDirection: 'row',
@@ -171,13 +342,13 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     width: '100%',
-    minHeight: '100%',
-    backgroundColor: 'url("./landingBG.png")', // Note: In React Native, you'd use ImageBackground component
+    minHeight: height - 72, // header height
+    experimental_backgroundImage: './assets/images/landingBG',
   },
   contentLeft: {
     flex: 1,
     padding: 32,
-    paddingLeft: 80,
+    paddingLeft: Platform.OS === 'web' ? 80 : 32,
   },
   welcomeMessage: {
     fontSize: 48,
@@ -211,6 +382,33 @@ const styles = StyleSheet.create({
   featureText: {
     color: 'white',
     fontSize: 14,
+  },
+  // Circle styles
+  circle: {
+    position: 'absolute',
+    borderRadius: 9999,
+    zIndex: 0,
+  },
+  circle1: {
+    width: 300,
+    height: 300,
+    bottom: -100,
+    right: -100,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  circle2: {
+    width: 200,
+    height: 200,
+    top: '10%',
+    left: -50,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  circle3: {
+    width: 150,
+    height: 150,
+    top: '50%',
+    right: '30%',
+    backgroundColor: 'rgba(255, 184, 0, 0.15)',
   },
 });
 

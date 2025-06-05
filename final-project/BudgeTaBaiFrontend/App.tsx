@@ -10,6 +10,7 @@ import {
   Dimensions,
   Platform
 } from 'react-native';
+import { Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -33,6 +34,20 @@ export type RootStackParamList = {
   Settings: undefined;
 };
 
+const linking = {
+  prefixes: ['http://localhost:8081'], // Adjust based on your local development server
+  config: {
+    screens: {
+      Landing: '/',
+      Login: '/login',
+      Signup: '/signup',
+      Dashboard: '/dashboard',
+      Overview: '/overview',
+      Settings: '/settings',
+    },
+  },
+};
+
 const Stack = createStackNavigator<RootStackParamList>();
 const { width, height } = Dimensions.get('window');
 
@@ -47,11 +62,13 @@ const LandingPage = () => {
   const circle3Pos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
 
   useEffect(() => {
-    setTimeout(() => {
-      animateElements();
-    }, 100);
-  }, []);
+    const handleBack = () => {
+      navigation.goBack();
+    };
 
+    window.addEventListener('popstate', handleBack);
+    return () => window.removeEventListener('popstate', handleBack);
+  }, []);
 
   // Elements to animate
   const animateElements = () => {
@@ -197,6 +214,10 @@ const LandingPage = () => {
 
       {/* Main Content */}
       <View style={styles.mainContent}>
+        <Image 
+          source={require('./assets/images/landingBG.png')}
+          style={styles.backgroundImage}
+        />
         <View style={styles.contentLeft}>
           <Animated.Text style={[
             styles.welcomeMessage,
@@ -276,7 +297,7 @@ const LandingPage = () => {
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator initialRouteName="Landing" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Landing" component={LandingPage} />
         <Stack.Screen name="Login" component={LoginScreen} />
@@ -362,7 +383,15 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     minHeight: height - 72, // header height
-    experimental_backgroundImage: './assets/images/landingBG',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative'
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover'
   },
   contentLeft: {
     flex: 1,

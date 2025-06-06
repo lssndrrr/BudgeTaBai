@@ -218,7 +218,7 @@ const LoginScreen = () => {
             <Text style={loginStyles.label}>Username</Text>
             <View style={loginStyles.inputWrapper}>
               <FontAwesome 
-                name="envelope" 
+                name="at" 
                 size={16} 
                 color="#9CA3AF" 
                 style={loginStyles.inputIcon} 
@@ -230,6 +230,7 @@ const LoginScreen = () => {
                   { transform: [{ translateX: shakeAnimation }] }
                 ]}
                 placeholder="Enter your username"
+                placeholderTextColor={'#9CA3AF'}
                 value={formData.username}
                 onChangeText={(text) => {
                   setFormData({...formData, username: text});
@@ -268,6 +269,7 @@ const LoginScreen = () => {
                   { transform: [{ translateX: shakeAnimation }] }
                 ]}
                 placeholder="Enter your password"
+                placeholderTextColor={'#9CA3AF'}
                 secureTextEntry={!showPassword}
                 value={formData.password}
                 onChangeText={(text) => {

@@ -113,11 +113,15 @@ const SignupScreen = () => {
       const data = await response.json();
 
       if (response.ok) {
+        console.log("Response is ok!");
         Alert.alert(
           'Account Created', 
-          'Your account has been created successfully!',
-          [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+          'Your account has been created successfully!'
         );
+
+        setTimeout(() => {
+          navigation.navigate('Login');
+        }, 500); // delay navigation by 500ms
       } else {
         // Handle backend validation errors
         const backendErrors: Record<string, string[]> = data;
@@ -249,6 +253,7 @@ const SignupScreen = () => {
                     { transform: [{ translateX: shakeAnimation }] }
                   ]}
                   placeholder="Juan"
+                  placeholderTextColor={'#9CA3AF'}
                   value={formData.firstName}
                   onChangeText={(text) => {
                     setFormData({...formData, firstName: text});
@@ -280,6 +285,7 @@ const SignupScreen = () => {
                     { transform: [{ translateX: shakeAnimation }] }
                   ]}
                   placeholder="Cruz"
+                  placeholderTextColor={'#9CA3AF'}
                   value={formData.lastName}
                   onChangeText={(text) => {
                     setFormData({...formData, lastName: text});
@@ -313,6 +319,7 @@ const SignupScreen = () => {
                   { transform: [{ translateX: shakeAnimation }] }
                 ]}
                 placeholder="juancruz143"
+                placeholderTextColor={'#9CA3AF'}
                 value={formData.username}
                 onChangeText={(text) => {
                   setFormData({...formData, username: text});
@@ -346,6 +353,7 @@ const SignupScreen = () => {
                   { transform: [{ translateX: shakeAnimation }] }
                 ]}
                 placeholder="juan@example.com"
+                placeholderTextColor={'#9CA3AF'}
                 value={formData.email}
                 onChangeText={(text) => {
                   setFormData({...formData, email: text});
@@ -380,6 +388,7 @@ const SignupScreen = () => {
                   { transform: [{ translateX: shakeAnimation }] }
                 ]}
                 placeholder="Create a strong password"
+                placeholderTextColor={'#9CA3AF'}
                 secureTextEntry={!showPassword}
                 value={formData.password}
                 onChangeText={(text) => {

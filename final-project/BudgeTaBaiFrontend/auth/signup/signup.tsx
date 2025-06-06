@@ -13,6 +13,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NavigationProps } from '../../App'
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import signupStyles from './signupStyles';
 import { useSignupAnimations } from './signupAnimations';
@@ -20,7 +21,7 @@ import { useSignupAnimations } from './signupAnimations';
 const { width } = Dimensions.get('window');
 
 const SignupScreen = () => {
-  const navigation = useNavigation() as any;
+  const navigation = useNavigation<NavigationProps>();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',

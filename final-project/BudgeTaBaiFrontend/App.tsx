@@ -34,6 +34,8 @@ export type RootStackParamList = {
   Settings: undefined;
 };
 
+export type NavigationProps = StackNavigationProp<RootStackParamList>;
+
 const linking = {
   prefixes: ['http://localhost:8081'], // Adjust based on your local development server
   config: {
@@ -52,7 +54,6 @@ const Stack = createStackNavigator<RootStackParamList>();
 const { width, height } = Dimensions.get('window');
 
 const LandingPage = () => {
-  type NavigationProps = StackNavigationProp<RootStackParamList>;
   const navigation = useNavigation<NavigationProps>();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(20)).current;

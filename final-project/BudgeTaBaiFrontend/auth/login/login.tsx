@@ -13,6 +13,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NavigationProps } from '../../App'
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import loginStyles from './loginStyles';
@@ -21,7 +22,7 @@ import { useLoginAnimations } from './loginAnimations';
 const { width } = Dimensions.get('window');
 
 const LoginScreen = () => {
-  const navigation = useNavigation() as any;
+  const navigation = useNavigation<NavigationProps>();  // Correctly typed navigation
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -46,25 +47,25 @@ const LoginScreen = () => {
     triggerShake
   } = useLoginAnimations();
 
-  useEffect(() => {
-    // Load remembered credentials if any
-    const loadCredentials = async () => {
-      try {
-        const savedUsername = await SecureStore.getItemAsync('username');
-        const savedPassword = await SecureStore.getItemAsync('password');
-        if (savedUsername && savedPassword) {
-          setFormData({
-            username: savedUsername,
-            password: savedPassword
-          });
-          setRememberMe(true);
-        }
-      } catch (error) {
-        console.error('Error loading credentials:', error);
-      }
-    };
-    loadCredentials();
-  }, []);
+  // useEffect(() => {
+  //   // Load remembered credentials if any
+  //   const loadCredentials = async () => {
+  //     try {
+  //       const savedUsername = await SecureStore.getItemAsync('username');
+  //       const savedPassword = await SecureStore.getItemAsync('password');
+  //       if (savedUsername && savedPassword) {
+  //         setFormData({
+  //           username: savedUsername,
+  //           password: savedPassword
+  //         });
+  //         setRememberMe(true);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error loading credentials:', error);
+  //     }
+  //   };
+  //   loadCredentials();
+  // }, []);
 
   const validate = () => {
     let valid = true;
@@ -93,7 +94,7 @@ const LoginScreen = () => {
       return;
     }
 
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const response = await fetch('http://127.0.0.1:8000/accounts/login/', {
         method: 'POST',
@@ -108,20 +109,34 @@ const LoginScreen = () => {
 
       const data = await response.json();
 
+      console.log("Is Response ok: ", response.ok);
+
       if (response.ok) {
         // Store tokens securely
-        await SecureStore.setItemAsync('access_token', data.access);
-        await SecureStore.setItemAsync('refresh_token', data.refresh);
+
+        console.log("Login successful, storing tokens...");
+
+        await Promise.all([
+          localStorage.setItem('access_token', data.access),
+          localStorage.setItem('refresh_token', data.refresh)
+        ]);
+
+        console.log("Tokens stored successfully");
 
         // Remember credentials if checkbox is checked
         if (rememberMe) {
-          await SecureStore.setItemAsync('username', formData.username);
-          await SecureStore.setItemAsync('password', formData.password);
+          await Promise.all([
+            localStorage.setItem('username', formData.username),
+            localStorage.setItem('refresh_token', data.refresh)
+          ]);
         } else {
-          await SecureStore.deleteItemAsync('username');
-          await SecureStore.deleteItemAsync('password');
+          await Promise.all([
+            localStorage.removeItem('username'),
+            localStorage.removeItem('password')
+          ]);
         }
 
+        console.log("Navigating to Dashboard...");
         navigation.navigate('Dashboard');
       } else {
         throw new Error(data.detail || 'Invalid credentials');

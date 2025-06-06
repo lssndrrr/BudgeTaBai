@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   signupCard: {
     flex: 1,
-    maxWidth: width >= 768 ? 480 : undefined,
+    maxWidth: width >= 768 ? 540 : undefined,
     padding: width >= 768 ? 32 : 24,
   },
   signupInfo: {

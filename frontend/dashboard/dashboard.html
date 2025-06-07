@@ -1,251 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budgetab.ai Dashboard</title>
-  <link rel="stylesheet" href="dashboardstyles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-  <div class="dashboard">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">
-          <i class="fa-solid fa-wallet"></i>
-          <h1>budgetab.ai</h1>
-        </div>
-        <button class="menu-toggle" id="menu-toggle">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <ul>
-          <li class="active"><a href="../dashboard/dashboard.html"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a></li>
-          <li><a href="../overview/overview.html"><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a></li>
-          <li><a href="../settings/settings.html"><i class="fa-solid fa-gear"></i> <span>Settings</span></a></li>
-        </ul>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="theme-toggle">
-          <span>Theme</span>
-          <label class="switch">
-            <input type="checkbox" id="theme-switch">
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="user-info">
-          <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150" alt="User Avatar">
-          <div>
-            <p class="user-name">Unknown</p>
-            <p class="user-email">Unknown Email</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budgetab.ai Dashboard</title>
+    <link rel="stylesheet" href="./dashboardstyles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fa-solid fa-wallet"></i>
+            <h1>budgetab.ai</h1>
           </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="main-header">
-        <div class="header-left">
-          <h2>Dashboard</h2>
-        </div>
-        <div class="header-right">
-          <button class="btn btn-primary" id="add-transaction">
-            <i class="fa-solid fa-plus"></i> Add Entry
+          <button class="menu-toggle" id="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
           </button>
         </div>
-      </header>
 
-      <div class="overview-cards">
-        <div class="card income-card">
-          <div class="card-icon">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-          </div>
-          <div class="card-content">
-            <h3>Income</h3>
-            <p class="amount">$0.00</p>
-          </div>
-        </div>
-        <div class="card expense-card">
-          <div class="card-icon">
-            <i class="fa-solid fa-arrow-trend-down"></i>
-          </div>
-          <div class="card-content">
-            <h3>Expenses</h3>
-            <p class="amount">$0.00</p>
-          </div>
-        </div>
-        <div class="card balance-card">
-          <div class="card-icon">
-            <i class="fa-solid fa-wallet"></i>
-          </div>
-          <div class="card-content">
-            <h3>Balance</h3>
-            <p class="amount">$0.00</p>
-          </div>
-        </div>
-      </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active">
+              <a href="../dashboard/dashboard.html"
+                ><i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span></a
+              >
+            </li>
+            <li>
+              <a href="../overview/overview.html"
+                ><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a
+              >
+            </li>
+            <li>
+              <a href="../settings/settings.html"
+                ><i class="fa-solid fa-gear"></i> <span>Settings</span></a
+              >
+            </li>
+          </ul>
+        </nav>
 
-      <div class="card transactions-card full-width">
-        <div class="card-header">
-          <h3>Entries</h3>
-          <div class="card-actions">
-            <div class="filter-dropdown">
-              <button class="btn-text">
-                <i class="fa-solid fa-filter"></i> Filter
-              </button>
-              <div class="dropdown-content">
-                <a href="#" data-filter="all" class="active">All</a>
-                <a href="#" data-filter="income">Income</a>
-                <a href="#" data-filter="expense">Expense</a>
-                <a href="#" data-filter="food">Food</a>
-                <a href="#" data-filter="travel">Travel</a>
-                <a href="#" data-filter="bills">Bills</a>
-                <a href="#" data-filter="other">Other</a>
+        <div class="sidebar-footer">
+          <div class="theme-toggle">
+            <span>Theme</span>
+            <label class="switch">
+              <input type="checkbox" id="theme-switch" />
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div class="user-info">
+            <img
+              src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150"
+              alt="User Avatar"
+            />
+            <div>
+              <p class="user-name">Unknown</p>
+              <p class="user-email">Unknown Email</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="main-header">
+          <div class="header-left">
+            <h2>Dashboard</h2>
+          </div>
+          <div class="header-right">
+            <button class="btn btn-primary" id="add-transaction">
+              <i class="fa-solid fa-plus"></i> Add Entry
+            </button>
+          </div>
+        </header>
+
+        <div class="overview-cards">
+          <div class="card income-card">
+            <div class="card-icon">
+              <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <div class="card-content">
+              <h3>Income</h3>
+              <p class="amount">$0.00</p>
+            </div>
+          </div>
+          <div class="card expense-card">
+            <div class="card-icon">
+              <i class="fa-solid fa-arrow-trend-down"></i>
+            </div>
+            <div class="card-content">
+              <h3>Expenses</h3>
+              <p class="amount">$0.00</p>
+            </div>
+          </div>
+          <div class="card balance-card">
+            <div class="card-icon">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+            <div class="card-content">
+              <h3>Balance</h3>
+              <p class="amount">$0.00</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card transactions-card full-width">
+          <div class="card-header">
+            <h3>Entries</h3>
+            <div class="card-actions">
+              <div class="filter-dropdown">
+                <button class="btn-text">
+                  <i class="fa-solid fa-filter"></i> Filter
+                </button>
+                <div class="dropdown-content">
+                  <a href="#" data-filter="all" class="active">All</a>
+                  <a href="#" data-filter="income">Income</a>
+                  <a href="#" data-filter="expense">Expense</a>
+                  <a href="#" data-filter="food">Food</a>
+                  <a href="#" data-filter="travel">Travel</a>
+                  <a href="#" data-filter="bills">Bills</a>
+                  <a href="#" data-filter="other">Other</a>
+                </div>
               </div>
             </div>
           </div>
+          <div class="transactions-list" id="transactions-list"></div>
         </div>
-        <div class="transactions-list" id="transactions-list">
+      </main>
+    </div>
+
+    <div class="modal" id="transaction-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Add New Entry</h3>
+          <button class="close-modal"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <form id="transaction-form">
+            <div class="form-group">
+              <label for="transaction-type">Transaction Type</label>
+              <div class="transaction-type-toggle">
+                <input
+                  type="radio"
+                  id="income-type"
+                  name="entry_type"
+                  value="income"
+                  checked
+                />
+                <label for="income-type">Income</label>
+                <input
+                  type="radio"
+                  id="expense-type"
+                  name="entry_type"
+                  value="expense"
+                />
+                <label for="expense-type">Expense</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="transaction-title">Title</label>
+              <input type="text" id="transaction-title" name="title" required />
+            </div>
+            <div class="form-group">
+              <label for="transaction-amount">Amount</label>
+              <div class="amount-input">
+                <span>$</span>
+                <input
+                  type="number"
+                  id="transaction-amount"
+                  name="amount"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="transaction-category">Category</label>
+              <select id="transaction-category" name="category">
+                <option value="food">Food</option>
+                <option value="travel">Travel</option>
+                <option value="bills">Bills</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="transaction-date">Date</label>
+              <input type="date" id="transaction-date" name="date" required />
+            </div>
+            <div class="form-group">
+              <label for="transaction-notes">Notes</label>
+              <textarea id="transaction-notes" name="notes" rows="3"></textarea>
+            </div>
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="cancel-transaction"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Save Transaction
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
 
-  <div class="modal" id="transaction-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Add New Entry</h3>
-        <button class="close-modal"><i class="fa-solid fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <form id="transaction-form">
-          <div class="form-group">
-            <label for="transaction-type">Transaction Type</label>
-            <div class="transaction-type-toggle">
-              <input type="radio" id="income-type" name="entry_type" value="income" checked>
-              <label for="income-type">Income</label>
-              <input type="radio" id="expense-type" name="entry_type" value="expense">
-              <label for="expense-type">Expense</label>
+    <div class="modal" id="edit-transaction-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Edit Transaction</h3>
+          <button class="close-modal"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-transaction-form">
+            <input type="hidden" id="edit-transaction-id" name="id" />
+            <div class="form-group">
+              <label for="edit-transaction-type">Transaction Type</label>
+              <div class="transaction-type-toggle">
+                <input
+                  type="radio"
+                  id="edit-income-type"
+                  name="entry_type"
+                  value="income"
+                />
+                <label for="edit-income-type">Income</label>
+                <input
+                  type="radio"
+                  id="edit-expense-type"
+                  name="entry_type"
+                  value="expense"
+                />
+                <label for="edit-expense-type">Expense</label>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="transaction-title">Title</label>
-            <input type="text" id="transaction-title" name="title" required>
-          </div>
-          <div class="form-group">
-            <label for="transaction-amount">Amount</label>
-            <div class="amount-input">
-              <span>$</span>
-              <input type="number" id="transaction-amount" name="amount" step="0.01" required>
+            <div class="form-group">
+              <label for="edit-transaction-title">Title</label>
+              <input
+                type="text"
+                id="edit-transaction-title"
+                name="title"
+                required
+              />
             </div>
-          </div>
-          <div class="form-group">
-            <label for="transaction-category">Category</label>
-            <select id="transaction-category" name="category">
-              <option value="food">Food</option>
-              <option value="travel">Travel</option>
-              <option value="bills">Bills</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="transaction-date">Date</label>
-            <input type="date" id="transaction-date" name="date" required>
-          </div>
-          <div class="form-group">
-            <label for="transaction-notes">Notes</label>
-            <textarea id="transaction-notes" name="notes" rows="3"></textarea>
-          </div>
-          <div class="form-actions">
-            <button type="button" class="btn btn-secondary" id="cancel-transaction">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save Transaction</button>
-          </div>
-        </form>
+            <div class="form-group">
+              <label for="edit-transaction-amount">Amount</label>
+              <div class="amount-input">
+                <span>$</span>
+                <input
+                  type="number"
+                  id="edit-transaction-amount"
+                  name="amount"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="edit-transaction-category">Category</label>
+              <select id="edit-transaction-category" name="category">
+                <option value="food">Food</option>
+                <option value="travel">Travel</option>
+                <option value="bills">Bills</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="edit-transaction-date">Date</label>
+              <input
+                type="date"
+                id="edit-transaction-date"
+                name="date"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="edit-transaction-notes">Notes</label>
+              <textarea
+                id="edit-transaction-notes"
+                name="notes"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-danger"
+                id="delete-transaction"
+              >
+                Delete
+              </button>
+              <div class="right-actions">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="cancel-edit"
+                >
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
+    <!-- AI Assistant Button -->
+    <button class="ai-assistant-btn" id="ai-assistant-btn">
+      <i class="fa-solid fa-robot"></i>
+    </button>
 
-  <div class="modal" id="edit-transaction-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Edit Transaction</h3>
-        <button class="close-modal"><i class="fa-solid fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <form id="edit-transaction-form">
-          <input type="hidden" id="edit-transaction-id" name="id">
-          <div class="form-group">
-            <label for="edit-transaction-type">Transaction Type</label>
-            <div class="transaction-type-toggle">
-              <input type="radio" id="edit-income-type" name="entry_type" value="income">
-              <label for="edit-income-type">Income</label>
-              <input type="radio" id="edit-expense-type" name="entry_type" value="expense">
-              <label for="edit-expense-type">Expense</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="edit-transaction-title">Title</label>
-            <input type="text" id="edit-transaction-title" name="title" required>
-          </div>
-          <div class="form-group">
-            <label for="edit-transaction-amount">Amount</label>
-            <div class="amount-input">
-              <span>$</span>
-              <input type="number" id="edit-transaction-amount" name="amount" step="0.01" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="edit-transaction-category">Category</label>
-            <select id="edit-transaction-category" name="category">
-              <option value="food">Food</option>
-              <option value="travel">Travel</option>
-              <option value="bills">Bills</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="edit-transaction-date">Date</label>
-            <input type="date" id="edit-transaction-date" name="date" required>
-          </div>
-          <div class="form-group">
-            <label for="edit-transaction-notes">Notes</label>
-            <textarea id="edit-transaction-notes" name="notes" rows="3"></textarea>
-          </div>
-          <div class="form-actions">
-            <button type="button" class="btn btn-danger" id="delete-transaction">Delete</button>
-            <div class="right-actions">
-              <button type="button" class="btn btn-secondary" id="cancel-edit">Cancel</button>
-              <button type="submit" class="btn btn-primary">Save Changes</button>
-            </div>
-          </div>
-        </form>
+    <!-- AI Suggestions Modal -->
+    <div class="ai-modal" id="ai-modal">
+      <div class="ai-modal-content">
+        <div class="ai-modal-header">
+          <i class="fa-solid fa-robot"></i>
+          <h4>AI Spending Insights</h4>
+          <span class="ai-modal-close" id="close-ai-modal">&times;</span>
+        </div>
+        <div class="ai-modal-body" id="ai-suggestions">
+          <div class="ai-suggestion">Analyzing your spending patterns...</div>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- AI Assistant Button -->
-  <button class="ai-assistant-btn" id="ai-assistant-btn">
-    <i class="fa-solid fa-robot"></i>
-  </button>
 
-  <!-- AI Suggestions Modal -->
-  <div class="ai-modal" id="ai-modal">
-    <div class="ai-modal-content">
-      <div class="ai-modal-header">
-        <i class="fa-solid fa-robot"></i>
-        <h4>AI Spending Insights</h4>
-        <span class="ai-modal-close" id="close-ai-modal">&times;</span>
-      </div>
-      <div class="ai-modal-body" id="ai-suggestions">
-        <div class="ai-suggestion">Analyzing your spending patterns...</div>
-      </div>
-    </div>
-  </div>
-
-  <script src="animations3.js"></script>
-  <script src="animations3.js"></script>
-</body>
+    <script src="animations3.js"></script>
+    <script src="animations3.js"></script>
+  </body>
 </html>

@@ -1,129 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BudgeTaBai Settings</title>
-  <link rel="stylesheet" href="settingsstyles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
-<body>
-  <div class="settings">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">
-          <i class="fa-solid fa-wallet"></i>
-          <h1>BudgeTaBai</h1>
-        </div>
-        <button class="menu-toggle" id="menu-toggle">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <ul>
-          <li><a href="../dashboard/dashboard.html"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a></li>
-          <li><a href="../overview/overview.html"><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a></li>
-          <li class="active"><a href="../settings/settings.html"><i class="fa-solid fa-gear"></i> <span>Settings</span></a></li>
-        </ul>
-      </nav>
-      
-
-      <div class="sidebar-footer">
-        <div class="theme-toggle">
-          <span>Theme</span>
-          <label class="switch">
-            <input type="checkbox" id="theme-switch">
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="user-info">
-          <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150" alt="User Avatar">
-          <div>
-            <p class="user-name">Unknown</p>
-            <p class="user-email">Unknown Email</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BudgeTaBai Settings</title>
+    <link rel="stylesheet" href="./settingsstyles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="settings">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fa-solid fa-wallet"></i>
+            <h1>BudgeTaBai</h1>
           </div>
+          <button class="menu-toggle" id="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
         </div>
-        
-      </div>
-    </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="main-header">
-        <div class="header-left">
-          <h2>Settings</h2>
-        </div>
-      </header>
+        <nav class="sidebar-nav">
+          <ul>
+            <li>
+              <a href="../dashboard/dashboard.html"
+                ><i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span></a
+              >
+            </li>
+            <li>
+              <a href="../overview/overview.html"
+                ><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a
+              >
+            </li>
+            <li class="active">
+              <a href="../settings/settings.html"
+                ><i class="fa-solid fa-gear"></i> <span>Settings</span></a
+              >
+            </li>
+          </ul>
+        </nav>
 
-      <!-- Budget Info Section -->
-      <div class="budget-info">
-        <p>Budget Limit: <span id="budget-limit">$0.00</span></p>
-        <p>Total Expenses: <span id="total-expenses">$0.00</span></p>
-      </div>
-
-      <div class="overview-cards">
-        <!-- Weekly Card -->
-        <div class="card weekly-card">
-          <div class="card-header">
-            <div class="card-icon">
-              <i class="fa-solid fa-calendar-week"></i>
-            </div>
-            
+        <div class="sidebar-footer">
+          <div class="theme-toggle">
+            <span>Theme</span>
+            <label class="switch">
+              <input type="checkbox" id="theme-switch" />
+              <span class="slider round"></span>
+            </label>
           </div>
-          <div class="card-content">
-            <h3>Weekly</h3>
-            <input type="range" id="weekly-slider" min="0" max="10000" value="0" step="100">
-            <p class="amount">Limit: $<span id="weekly-value">0</span></p>
-          </div>
-        </div>
-        <!-- Monthly Card -->
-        <div class="card monthly-card">
-          <div class="card-header">
-            <div class="card-icon">
-              <i class="fa-solid fa-calendar-alt"></i>
+          <div class="user-info">
+            <img
+              src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150"
+              alt="User Avatar"
+            />
+            <div>
+              <p class="user-name">Unknown</p>
+              <p class="user-email">Unknown Email</p>
             </div>
           </div>
-          <div class="card-content">
-            <h3>Monthly</h3>
-            <input type="range" id="monthly-slider" min="0" max="20000" value="0" step="100">
-            <p class="amount">Limit: $<span id="monthly-value">0</span></p>
-          </div>
         </div>
-        <!-- Annually Card -->
-        <div class="card annually-card">
-          <div class="card-header">
-            <div class="card-icon">
-              <i class="fa-solid fa-calendar"></i>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="main-header">
+          <div class="header-left">
+            <h2>Settings</h2>
+          </div>
+        </header>
+
+        <!-- Budget Info Section -->
+        <div class="budget-info">
+          <p>Budget Limit: <span id="budget-limit">$0.00</span></p>
+          <p>Total Expenses: <span id="total-expenses">$0.00</span></p>
+        </div>
+
+        <div class="overview-cards">
+          <!-- Weekly Card -->
+          <div class="card weekly-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fa-solid fa-calendar-week"></i>
+              </div>
             </div>
-            
+            <div class="card-content">
+              <h3>Weekly</h3>
+              <input
+                type="range"
+                id="weekly-slider"
+                min="0"
+                max="10000"
+                value="0"
+                step="100"
+              />
+              <p class="amount">Limit: $<span id="weekly-value">0</span></p>
+            </div>
           </div>
-          <div class="card-content">
-            <h3>Annually</h3>
-            <input type="range" id="annually-slider" min="0" max="100000" value="0" step="500">
-            <p class="amount">Limit: $<span id="annually-value">0</span></p>
+          <!-- Monthly Card -->
+          <div class="card monthly-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fa-solid fa-calendar-alt"></i>
+              </div>
+            </div>
+            <div class="card-content">
+              <h3>Monthly</h3>
+              <input
+                type="range"
+                id="monthly-slider"
+                min="0"
+                max="20000"
+                value="0"
+                step="100"
+              />
+              <p class="amount">Limit: $<span id="monthly-value">0</span></p>
+            </div>
+          </div>
+          <!-- Annually Card -->
+          <div class="card annually-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fa-solid fa-calendar"></i>
+              </div>
+            </div>
+            <div class="card-content">
+              <h3>Annually</h3>
+              <input
+                type="range"
+                id="annually-slider"
+                min="0"
+                max="100000"
+                value="0"
+                step="500"
+              />
+              <p class="amount">Limit: $<span id="annually-value">0</span></p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <button id="logout-button" class="btn-logout floating">
-        Log out
-      </button>
+        <button id="logout-button" class="btn-logout floating">Log out</button>
 
-      <div id="logout-modal" class="modal hidden">
-        <div class="modal-content">
-          <p>Are you sure you want to log out?</p>
-          <div class="modal-actions">
-            <button id="confirm-logout" class="btn-confirm">Yes, Log Out</button>
-            <button id="cancel-logout" class="btn-cancel">Cancel</button>
+        <div id="logout-modal" class="modal hidden">
+          <div class="modal-content">
+            <p>Are you sure you want to log out?</p>
+            <div class="modal-actions">
+              <button id="confirm-logout" class="btn-confirm">
+                Yes, Log Out
+              </button>
+              <button id="cancel-logout" class="btn-cancel">Cancel</button>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
+    </div>
 
-    </main>
-  </div>
-
-  <!-- External JavaScript -->
-  <script src="animations5.js"></script>
-</body>
+    <!-- External JavaScript -->
+    <script src="animations5.js"></script>
+  </body>
 </html>

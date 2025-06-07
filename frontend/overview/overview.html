@@ -1,103 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BudgeTaBai Overview</title>
-  <link rel="stylesheet" href="overviewstyles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <div class="settings">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">
-          <i class="fa-solid fa-wallet"></i>
-          <h1>BudgeTaBai</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BudgeTaBai Overview</title>
+    <link rel="stylesheet" href="./overviewstyles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="settings">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fa-solid fa-wallet"></i>
+            <h1>BudgeTaBai</h1>
+          </div>
+          <button class="menu-toggle" id="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
         </div>
-        <button class="menu-toggle" id="menu-toggle">
-          <i class="fa-solid fa-bars"></i>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li>
+              <a href="../dashboard/dashboard.html"
+                ><i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span></a
+              >
+            </li>
+            <li class="active">
+              <a href="../overview/overview.html"
+                ><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a
+              >
+            </li>
+            <li>
+              <a href="../settings/settings.html"
+                ><i class="fa-solid fa-gear"></i> <span>Settings</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="theme-toggle">
+            <span>Theme</span>
+            <label class="switch">
+              <input type="checkbox" id="theme-switch" />
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div class="user-info">
+            <img
+              src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150"
+              alt="User Avatar"
+            />
+            <div>
+              <p class="user-name">Unknown</p>
+              <p class="user-email">Unknown Email</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="main-header">
+          <div class="header-left">
+            <h2>Overview</h2>
+            <div class="filter-container">
+              <div class="filter-group animated">
+                <label for="start-date">Export Start Date:</label>
+                <input
+                  type="date"
+                  id="start-date"
+                  name="start-date"
+                  class="filter-input"
+                />
+              </div>
+              <div class="filter-group animated">
+                <label for="end-date">Export End Date:</label>
+                <input
+                  type="date"
+                  id="end-date"
+                  name="end-date"
+                  class="filter-input"
+                />
+              </div>
+              <div class="filter-group animated">
+                <label for="category">Export Category:</label>
+                <select id="category" name="category" class="filter-input">
+                  <option value="all">All</option>
+                  <option value="food">Food</option>
+                  <option value="travel">Travel</option>
+                  <option value="bills">Bills</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Charts Section -->
+        <div class="overview-charts">
+          <!-- Pie Chart -->
+          <div class="chart-card">
+            <h3>Expenses by Category</h3>
+            <canvas id="expensesPieChart"></canvas>
+          </div>
+
+          <!-- Bar Chart -->
+          <div class="chart-card">
+            <h3>Monthly Income vs Expenses</h3>
+            <canvas id="incomeExpenseBarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Export Button -->
+        <button id="export-csv-button" class="btn-export floating">
+          <i class="fas fa-download"></i> Export CSV
         </button>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <ul>
-          <li><a href="../dashboard/dashboard.html"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a></li>
-          <li class="active"><a href="../overview/overview.html"><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a></li>
-          <li><a href="../settings/settings.html"><i class="fa-solid fa-gear"></i> <span>Settings</span></a></li>
-        </ul>
-      </nav>
-      
-      <div class="sidebar-footer">
-        <div class="theme-toggle">
-          <span>Theme</span>
-          <label class="switch">
-            <input type="checkbox" id="theme-switch">
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="user-info">
-          <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150" alt="User Avatar">
-          <div>
-            <p class="user-name">Unknown</p>
-            <p class="user-email">Unknown Email</p>
-          </div>
-        </div>
-      </div>
-    </aside>
+      </main>
+    </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="main-header">
-        <div class="header-left">
-          <h2>Overview</h2>
-          <div class="filter-container">
-            <div class="filter-group animated">
-              <label for="start-date">Export Start Date:</label>
-              <input type="date" id="start-date" name="start-date" class="filter-input">
-            </div>
-            <div class="filter-group animated">
-              <label for="end-date">Export End Date:</label>
-              <input type="date" id="end-date" name="end-date" class="filter-input">
-            </div>
-            <div class="filter-group animated">
-              <label for="category">Export Category:</label>
-              <select id="category" name="category" class="filter-input">
-                <option value="all">All</option>
-                <option value="food">Food</option>
-                <option value="travel">Travel</option>
-                <option value="bills">Bills</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- Charts Section -->
-      <div class="overview-charts">
-        <!-- Pie Chart -->
-        <div class="chart-card">
-          <h3>Expenses by Category</h3>
-          <canvas id="expensesPieChart"></canvas>
-        </div>
-
-        <!-- Bar Chart -->
-        <div class="chart-card">
-          <h3>Monthly Income vs Expenses</h3>
-          <canvas id="incomeExpenseBarChart"></canvas>
-        </div>
-      </div>
-
-      <!-- Export Button -->
-      <button id="export-csv-button" class="btn-export floating">
-        <i class="fas fa-download"></i> Export CSV
-      </button>
-    </main>
-  </div>
-
-  <script src="animations6.js"></script>
-</body>
+    <script src="animations6.js"></script>
+  </body>
 </html>

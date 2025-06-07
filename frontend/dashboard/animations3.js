@@ -205,6 +205,78 @@ function showNotification(message, type = 'success') {
   });
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  const aiBtn = document.getElementById('ai-assistant-btn');
+  const aiModal = document.getElementById('ai-modal');
+  const closeBtn = document.getElementById('close-ai-modal');
+  const aiSuggestions = document.getElementById('ai-suggestions');
+
+  // Toggle modal visibility
+  aiBtn.addEventListener('click', function() {
+    if (aiModal.style.display === 'block') {
+      aiModal.style.display = 'none';
+    } else {
+      aiModal.style.display = 'block';
+      fetchSpendingInsights();
+    }
+  });
+
+  // Close modal
+  closeBtn.addEventListener('click', function() {
+    aiModal.style.display = 'none';
+  });
+
+  // Close when clicking outside modal
+  window.addEventListener('click', function(e) {
+    if (e.target === aiModal) {
+      aiModal.style.display = 'none';
+    }
+  });
+
+  // Fetch spending insights from API (same as before)
+  async function fetchSpendingInsights() {
+    try {
+      // Show loading state
+      aiSuggestions.innerHTML = '<div class="ai-suggestion">Analyzing your spending patterns...</div>';
+      
+      // Get authentication token (assuming you're using JWT)
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch('/api/tracker/insights', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch insights');
+      }
+
+      const data = await response.json();
+      
+      // Format the suggestions from API response
+      if (data.insights && data.insights.length > 0) {
+        aiSuggestions.innerHTML = data.insights
+          .map(insight => `<div class="ai-suggestion">${insight.message}</div>`)
+          .join('');
+      } else {
+        aiSuggestions.innerHTML = '<div class="ai-suggestion">No insights available yet. Add more transactions to get suggestions.</div>';
+      }
+      
+    } catch (error) {
+      console.error('Error fetching insights:', error);
+      aiSuggestions.innerHTML = `
+        <div class="ai-suggestion">
+          <span class="ai-loading"></span>
+          Analyzing your spending patterns...
+        </div>
+      `;
+    }
+  }
+});
+
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', async () => {
   // Fetch and display account information

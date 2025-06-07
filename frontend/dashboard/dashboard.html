@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BudgeTaBai Dashboard</title>
+  <title>Budgetab.ai Dashboard</title>
   <link rel="stylesheet" href="dashboardstyles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -13,7 +13,7 @@
       <div class="sidebar-header">
         <div class="logo">
           <i class="fa-solid fa-wallet"></i>
-          <h1>BudgeTaBai</h1>
+          <h1>budgetab.ai</h1>
         </div>
         <button class="menu-toggle" id="menu-toggle">
           <i class="fa-solid fa-bars"></i>
@@ -226,7 +226,26 @@
       </div>
     </div>
   </div>
+  <!-- AI Assistant Button -->
+  <button class="ai-assistant-btn" id="ai-assistant-btn">
+    <i class="fa-solid fa-robot"></i>
+  </button>
 
+  <!-- AI Suggestions Modal -->
+  <div class="ai-modal" id="ai-modal">
+    <div class="ai-modal-content">
+      <div class="ai-modal-header">
+        <i class="fa-solid fa-robot"></i>
+        <h4>AI Spending Insights</h4>
+        <span class="ai-modal-close" id="close-ai-modal">&times;</span>
+      </div>
+      <div class="ai-modal-body" id="ai-suggestions">
+        <div class="ai-suggestion">Analyzing your spending patterns...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="animations3.js"></script>
   <script src="animations3.js"></script>
 </body>
 </html>

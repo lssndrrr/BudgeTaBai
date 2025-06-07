@@ -1,7 +1,9 @@
+const API_BASE_URL = "https://budgetab-ai-backend.onrender.com/";
+
 // Account Info API
 async function fetchAccountInfo() {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/accounts/me/', {
+    const response = await fetch(`${API_BASE_URL}accounts/me/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
       },
@@ -242,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Get authentication token (assuming you're using JWT)
       const token = localStorage.getItem('token');
       
-      const response = await fetch('/api/tracker/insights', {
+      const response = await fetch(`${API_BASE_URL}tracker/insights`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -309,9 +311,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const icon = menuToggle.querySelector('i');
     if (sidebar.classList.contains('collapsed')) {
       icon.classList.remove('fa-bars');
-      icon.classList.add('fa-times');
+      icon.classList.add('fa-caret-square-right');
     } else {
-      icon.classList.remove('fa-times');
+      icon.classList.remove('fa-caret-square-right');
       icon.classList.add('fa-bars');
     }
     

@@ -1,3 +1,5 @@
+const API_BASE_URL = "https://budgetab-ai-backend.onrender.com/";
+
 document.addEventListener('DOMContentLoaded', () => {
   const formElements = document.querySelectorAll('.form-group, .brand, h2, .subtitle');
 
@@ -231,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = document.getElementById('password').value;
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/accounts/login/', {
+        const response = await fetch(`${API_BASE_URL}accounts/login/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

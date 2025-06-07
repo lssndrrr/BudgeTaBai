@@ -1,3 +1,5 @@
+const API_BASE_URL = "https://budgetab-ai-backend.onrender.com/";
+
 document.addEventListener('DOMContentLoaded', () => {
   const signupForm = document.getElementById('signup-form');
   const inputs = {
@@ -151,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         // Send a POST request to the backend registration API
-        const response = await fetch('http://127.0.0.1:8000/accounts/register/', {
+        const response = await fetch(`${API_BASE_URL}accounts/register/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

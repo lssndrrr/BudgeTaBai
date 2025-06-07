@@ -1,319 +1,99 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  FlatList,
-  Image,
-  Modal,
-  Dimensions,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../App";
-import Icon from "react-native-vector-icons/FontAwesome";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useDashboardAnimations } from "./dashboardAnimations";
-import dashboardStyles from "./dashboardStyles";
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome6';
+import dashboardStyles from './dashboardStyles';
 
-type DashboardScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Dashboard"
->;
-
-const DashboardScreen = () => {
-  const navigation = useNavigation<DashboardScreenNavigationProp>();
-  const { fadeAnim } = useDashboardAnimations();
-
-  const [darkTheme, setDarkTheme] = useState(false);
+const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showTransactionModal, setShowTransactionModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [transactions, setTransactions] = useState<any[]>([]);
-  const [filter, setFilter] = useState("all");
-  const [accountInfo, setAccountInfo] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-  });
-
-  // Mock data for transactions
-  useEffect(() => {
-    const mockTransactions = [
-      {
-        id: "1",
-        title: "Salary",
-        amount: 3000,
-        entry_type: "income",
-        category: "salary",
-        date: "2023-06-01",
-      },
-      {
-        id: "2",
-        title: "Rent",
-        amount: 1200,
-        entry_type: "expense",
-        category: "housing",
-        date: "2023-06-05",
-      },
-      {
-        id: "3",
-        title: "Groceries",
-        amount: 150,
-        entry_type: "expense",
-        category: "food",
-        date: "2023-06-07",
-      },
-      {
-        id: "4",
-        title: "Freelance Work",
-        amount: 850,
-        entry_type: "income",
-        category: "freelance",
-        date: "2023-06-10",
-      },
-      {
-        id: "5",
-        title: "Dinner Out",
-        amount: 75,
-        entry_type: "expense",
-        category: "food",
-        date: "2023-06-12",
-      },
-    ];
-    setTransactions(mockTransactions);
-  }, []);
-
-  const toggleTheme = () => {
-    setDarkTheme(!darkTheme);
-  };
+  const [themeDark, setThemeDark] = useState(false);
+  const [transactionModalVisible, setTransactionModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [transactionType, setTransactionType] = useState('income');
+  const [editTransactionType, setEditTransactionType] = useState('income');
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
-  const calculateFinancialSummary = () => {
-    const totalIncome = transactions
-      .filter((t) => t.entry_type === "income")
-      .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
-
-    const totalExpenses = transactions
-      .filter((t) => t.entry_type === "expense")
-      .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
-
-    const balance = totalIncome - totalExpenses;
-
-    return { totalIncome, totalExpenses, balance };
+  const toggleTheme = () => {
+    setThemeDark(!themeDark);
   };
 
-  const { totalIncome, totalExpenses, balance } = calculateFinancialSummary();
+  const [showAIPopover, setShowAIPopover] = useState(false);
+  const [aiSuggestions, setAISuggestions] = useState<string[]>([]);
 
-  const filteredTransactions =
-    filter === "all"
-      ? transactions
-      : transactions.filter(
-          (t) => t.entry_type === filter || t.category === filter
-        );
-
-  const renderTransactionItem = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={dashboardStyles.transactionItem}
-      onPress={() => setShowEditModal(true)}
-    >
-      <View
-        style={[
-          dashboardStyles.transactionIcon,
-          item.entry_type === "income"
-            ? dashboardStyles.incomeIcon
-            : dashboardStyles.expenseIcon,
-        ]}
-      >
-        <Icon
-          name={item.entry_type === "income" ? "arrow-up" : "arrow-down"}
-          size={16}
-          color={item.entry_type === "income" ? "#2ecc71" : "#e74c3c"}
-        />
-      </View>
-      <View style={dashboardStyles.transactionDetails}>
-        <Text
-          style={[
-            dashboardStyles.transactionTitle,
-            darkTheme && { color: "#e1e1e1" },
-          ]}
-        >
-          {item.title}
-        </Text>
-        <View style={dashboardStyles.transactionInfo}>
-          <Text style={darkTheme ? { color: "#b0b0b0" } : { color: "#666" }}>
-            {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
-          </Text>
-          <Text style={darkTheme ? { color: "#b0b0b0" } : { color: "#666" }}>
-            {item.date}
-          </Text>
-        </View>
-      </View>
-      <Text
-        style={[
-          dashboardStyles.transactionAmount,
-          item.entry_type === "income"
-            ? dashboardStyles.incomeAmount
-            : dashboardStyles.expenseAmount,
-        ]}
-      >
-        {item.entry_type === "income" ? "+" : "-"}${item.amount.toFixed(2)}
-      </Text>
-    </TouchableOpacity>
-  );
+  const generateAISuggestions = () => {
+    const mockSuggestions = [
+      "You're spending 30% more on dining out this month",
+      "Consider setting a budget for entertainment",
+      "Your savings rate is lower than last month",
+      "You could save $50 by reducing coffee shop visits"
+    ];
+    setAISuggestions(mockSuggestions);
+    setShowAIPopover(!showAIPopover);
+  };
 
   return (
-    <View
-      style={[
-        dashboardStyles.container,
-        darkTheme && dashboardStyles.darkContainer,
-      ]}
-    >
+    <View style={[dashboardStyles.container, themeDark && dashboardStyles.darkContainer]}>
       {/* Sidebar */}
-      <View
-        style={[
-          dashboardStyles.sidebar,
-          sidebarCollapsed && dashboardStyles.sidebarCollapsed,
-          darkTheme && dashboardStyles.darkSidebar,
-        ]}
-      >
+      <View style={[
+        dashboardStyles.sidebar, 
+        sidebarCollapsed && dashboardStyles.sidebarCollapsed,
+        themeDark && dashboardStyles.darkSidebar
+      ]}>
         <View style={dashboardStyles.sidebarHeader}>
           <View style={dashboardStyles.logo}>
-            <Icon name="wallet" size={24} color="#e74c3c" />
-            {!sidebarCollapsed && (
-              <Text
-                style={[
-                  dashboardStyles.logoText,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                BudgeTaBai
-              </Text>
-            )}
+            <Icon name="wallet" size={20} color="#e74c3c" />
+            {!sidebarCollapsed && <Text style={dashboardStyles.logoText}>BudgeTaBai</Text>}
           </View>
           <TouchableOpacity onPress={toggleSidebar}>
-            <Icon
-              name={sidebarCollapsed ? "bars" : "times"}
-              size={20}
-              color={darkTheme ? "#b0b0b0" : "#666"}
-            />
+            <Icon name="bars" size={20} color="#666" />
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={dashboardStyles.sidebarNav}>
-          <TouchableOpacity
-            style={[dashboardStyles.navItem, { borderLeftColor: "#e74c3c" }]}
-          >
-            <Icon name="chart-line" size={20} color="#e74c3c" />
-            {!sidebarCollapsed && (
-              <Text
-                style={[
-                  dashboardStyles.navText,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                Dashboard
-              </Text>
-            )}
+        <View style={dashboardStyles.sidebarNav}>
+          <TouchableOpacity style={[dashboardStyles.navItem, { borderLeftColor: '#e74c3c' }]}>
+            <Icon name="chart-line" size={16} color="#e74c3c" />
+            {!sidebarCollapsed && <Text style={[dashboardStyles.navText, { color: '#e74c3c' }]}>Dashboard</Text>}
           </TouchableOpacity>
-          <TouchableOpacity
-            style={dashboardStyles.navItem}
-            onPress={() => navigation.navigate("Overview")}
-          >
-            <Icon
-              name="chart-pie"
-              size={20}
-              color={darkTheme ? "#b0b0b0" : "#666"}
-            />
-            {!sidebarCollapsed && (
-              <Text
-                style={[
-                  dashboardStyles.navText,
-                  darkTheme && { color: "#b0b0b0" },
-                ]}
-              >
-                Overview
-              </Text>
-            )}
+          
+          <TouchableOpacity style={dashboardStyles.navItem}>
+            <Icon name="chart-pie" size={16} color="#666" />
+            {!sidebarCollapsed && <Text style={dashboardStyles.navText}>Overview</Text>}
           </TouchableOpacity>
-          <TouchableOpacity
-            style={dashboardStyles.navItem}
-            onPress={() => navigation.navigate("Settings")}
-          >
-            <Icon
-              name="gear"
-              size={20}
-              color={darkTheme ? "#b0b0b0" : "#666"}
-            />
-            {!sidebarCollapsed && (
-              <Text
-                style={[
-                  dashboardStyles.navText,
-                  darkTheme && { color: "#b0b0b0" },
-                ]}
-              >
-                Settings
-              </Text>
-            )}
+          
+          <TouchableOpacity style={dashboardStyles.navItem}>
+            <Icon name="gear" size={16} color="#666" />
+            {!sidebarCollapsed && <Text style={dashboardStyles.navText}>Settings</Text>}
           </TouchableOpacity>
-        </ScrollView>
+        </View>
 
         <View style={dashboardStyles.sidebarFooter}>
           <View style={dashboardStyles.themeToggle}>
-            {!sidebarCollapsed && (
-              <Text
-                style={[
-                  dashboardStyles.themeText,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                Theme
-              </Text>
-            )}
-            <TouchableOpacity onPress={toggleTheme}>
-              <View
-                style={[
-                  dashboardStyles.themeSwitch,
-                  darkTheme && dashboardStyles.themeSwitchActive,
-                ]}
-              >
-                <View
-                  style={[
-                    dashboardStyles.themeSwitchThumb,
-                    { transform: [{ translateX: darkTheme ? 20 : 0 }] },
-                  ]}
-                />
-              </View>
+            {!sidebarCollapsed && <Text style={dashboardStyles.themeText}>Theme</Text>}
+            <TouchableOpacity 
+              style={[
+                dashboardStyles.themeSwitch,
+                themeDark && dashboardStyles.themeSwitchActive
+              ]}
+              onPress={toggleTheme}
+            >
+              <View style={[
+                dashboardStyles.themeSwitchThumb,
+                themeDark && { transform: [{ translateX: 20 }] }
+              ]} />
             </TouchableOpacity>
           </View>
 
           <View style={dashboardStyles.userInfo}>
-            <Image
-              source={{ uri: accountInfo.avatar }}
+            <Image 
+              source={{uri: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150'}} 
               style={dashboardStyles.userAvatar}
             />
             {!sidebarCollapsed && (
               <View>
-                <Text
-                  style={[
-                    dashboardStyles.userName,
-                    darkTheme && { color: "#e1e1e1" },
-                  ]}
-                >
-                  {accountInfo.name}
-                </Text>
-                <Text
-                  style={[
-                    dashboardStyles.userEmail,
-                    darkTheme && { color: "#b0b0b0" },
-                  ]}
-                >
-                  {accountInfo.email}
-                </Text>
+                <Text style={dashboardStyles.userName}>Unknown</Text>
+                <Text style={dashboardStyles.userEmail}>Unknown Email</Text>
               </View>
             )}
           </View>
@@ -321,264 +101,273 @@ const DashboardScreen = () => {
       </View>
 
       {/* Main Content */}
-      <Animated.View
-        style={[
-          dashboardStyles.mainContent,
-          sidebarCollapsed && dashboardStyles.mainContentExpanded,
-          { opacity: fadeAnim },
-        ]}
-      >
+      <View style={[
+        dashboardStyles.mainContent,
+        sidebarCollapsed && dashboardStyles.mainContentExpanded
+      ]}>
         <View style={dashboardStyles.mainHeader}>
           <View style={dashboardStyles.headerLeft}>
-            <Text
-              style={[
-                dashboardStyles.headerTitle,
-                darkTheme && { color: "#e1e1e1" },
-              ]}
-            >
-              Dashboard
-            </Text>
+            <Text style={dashboardStyles.headerTitle}>Dashboard</Text>
           </View>
-          <TouchableOpacity
+          <TouchableOpacity 
             style={dashboardStyles.addButton}
-            onPress={() => setShowTransactionModal(true)}
+            onPress={() => setTransactionModalVisible(true)}
           >
-            <Icon name="plus" size={16} color="white" />
+            <Icon name="plus" size={16} color="#fff" />
             <Text style={dashboardStyles.addButtonText}>Add Entry</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Overview Cards */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={dashboardStyles.overviewCards}
-        >
-          <View
-            style={[
-              dashboardStyles.card,
-              dashboardStyles.incomeCard,
-              darkTheme && { backgroundColor: "#1e1e1e" },
-            ]}
-          >
-            <View
-              style={[
-                dashboardStyles.cardIcon,
-                { backgroundColor: "rgba(255, 127, 127, 0.1)" },
-              ]}
-            >
-              <Icon name="arrow-trend-up" size={24} color="#ff7f7f" />
+        <ScrollView>
+          {/* Overview Cards */}
+          <View style={dashboardStyles.overviewCards}>
+            <View style={[dashboardStyles.card, dashboardStyles.incomeCard]}>
+              <View style={dashboardStyles.cardIcon}>
+                <Icon name="arrow-trend-up" size={20} color="#ff7f7f" />
+              </View>
+              <View style={dashboardStyles.cardContent}>
+                <Text style={dashboardStyles.cardTitle}>Income</Text>
+                <Text style={dashboardStyles.cardAmount}>$0.00</Text>
+              </View>
             </View>
-            <View style={dashboardStyles.cardContent}>
-              <Text
-                style={[
-                  dashboardStyles.cardTitle,
-                  darkTheme && { color: "#b0b0b0" },
-                ]}
-              >
-                Income
-              </Text>
-              <Text
-                style={[
-                  dashboardStyles.cardAmount,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                ${totalIncome.toFixed(2)}
-              </Text>
-              <View style={dashboardStyles.trend}>
-                <Icon name="arrow-up" size={12} color="#2ecc71" />
-                <Text
-                  style={[
-                    dashboardStyles.trendText,
-                    darkTheme && { color: "#b0b0b0" },
-                  ]}
-                >
-                  10% from last month
-                </Text>
+
+            <View style={[dashboardStyles.card, dashboardStyles.expenseCard]}>
+              <View style={dashboardStyles.cardIcon}>
+                <Icon name="arrow-trend-down" size={20} color="#ff4d4d" />
+              </View>
+              <View style={dashboardStyles.cardContent}>
+                <Text style={dashboardStyles.cardTitle}>Expenses</Text>
+                <Text style={dashboardStyles.cardAmount}>$0.00</Text>
+              </View>
+            </View>
+
+            <View style={[dashboardStyles.card, dashboardStyles.balanceCard]}>
+              <View style={dashboardStyles.cardIcon}>
+                <Icon name="wallet" size={20} color="#e74c3c" />
+              </View>
+              <View style={dashboardStyles.cardContent}>
+                <Text style={dashboardStyles.cardTitle}>Balance</Text>
+                <Text style={dashboardStyles.cardAmount}>$0.00</Text>
               </View>
             </View>
           </View>
 
-          <View
-            style={[
-              dashboardStyles.card,
-              dashboardStyles.expenseCard,
-              darkTheme && { backgroundColor: "#1e1e1e" },
-            ]}
-          >
-            <View
-              style={[
-                dashboardStyles.cardIcon,
-                { backgroundColor: "rgba(255, 77, 77, 0.1)" },
-              ]}
-            >
-              <Icon name="arrow-trend-down" size={24} color="#ff4d4d" />
-            </View>
-            <View style={dashboardStyles.cardContent}>
-              <Text
-                style={[
-                  dashboardStyles.cardTitle,
-                  darkTheme && { color: "#b0b0b0" },
-                ]}
-              >
-                Expenses
-              </Text>
-              <Text
-                style={[
-                  dashboardStyles.cardAmount,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                ${totalExpenses.toFixed(2)}
-              </Text>
-              <View style={dashboardStyles.trend}>
-                <Icon name="arrow-down" size={12} color="#f39c12" />
-                <Text
-                  style={[
-                    dashboardStyles.trendText,
-                    darkTheme && { color: "#b0b0b0" },
-                  ]}
-                >
-                  5% from last month
-                </Text>
+          {/* Transactions Card */}
+          <View style={[dashboardStyles.card, dashboardStyles.fullWidthCard]}>
+            <View style={dashboardStyles.cardHeader}>
+              <Text style={dashboardStyles.cardHeaderTitle}>Entries</Text>
+              <View style={dashboardStyles.filterDropdown}>
+                <TouchableOpacity style={dashboardStyles.filterButton}>
+                  <Icon name="filter" size={16} color="#e74c3c" />
+                  <Text style={dashboardStyles.filterButtonText}>Filter</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </View>
 
-          <View
-            style={[
-              dashboardStyles.card,
-              dashboardStyles.balanceCard,
-              darkTheme && { backgroundColor: "#1e1e1e" },
-            ]}
-          >
-            <View
-              style={[
-                dashboardStyles.cardIcon,
-                { backgroundColor: "rgba(231, 76, 60, 0.1)" },
-              ]}
-            >
-              <Icon name="wallet" size={24} color="#e74c3c" />
-            </View>
-            <View style={dashboardStyles.cardContent}>
-              <Text
-                style={[
-                  dashboardStyles.cardTitle,
-                  darkTheme && { color: "#b0b0b0" },
-                ]}
-              >
-                Balance
+            <View style={dashboardStyles.transactionsList}>
+              {/* Empty state */}
+              <Text style={{ textAlign: 'center', padding: 20, color: '#666' }}>
+                No transactions yet
               </Text>
-              <Text
-                style={[
-                  dashboardStyles.cardAmount,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                ${balance.toFixed(2)}
-              </Text>
-              <View style={dashboardStyles.trend}>
-                <Icon name="arrow-up" size={12} color="#2ecc71" />
-                <Text
-                  style={[
-                    dashboardStyles.trendText,
-                    darkTheme && { color: "#b0b0b0" },
-                  ]}
-                >
-                  15% from last month
-                </Text>
-              </View>
             </View>
           </View>
         </ScrollView>
 
-        {/* Transactions Card */}
-        <View
-          style={[
-            dashboardStyles.card,
-            dashboardStyles.fullWidthCard,
-            darkTheme && { backgroundColor: "#1e1e1e" },
-          ]}
+        {/* AI Assistant Button */}
+        <TouchableOpacity 
+          style={dashboardStyles.aiButton}
+          onPress={generateAISuggestions}
         >
-          <View style={dashboardStyles.cardHeader}>
-            <Text
-              style={[
-                dashboardStyles.cardHeaderTitle,
-                darkTheme && { color: "#e1e1e1" },
-              ]}
-            >
-              Recent Transactions
-            </Text>
-            <View style={dashboardStyles.filterDropdown}>
-              <TouchableOpacity
-                style={dashboardStyles.filterButton}
-                onPress={() => setFilter(filter === "all" ? "expense" : "all")}
-              >
-                <Icon name="filter" size={16} color="#e74c3c" />
-                <Text
-                  style={[
-                    dashboardStyles.filterButtonText,
-                    darkTheme && { color: "#e74c3c" },
-                  ]}
-                >
-                  {filter === "all" ? "All" : "Filtered"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Icon name="robot" size={24} color="#fff" />
+        </TouchableOpacity>
 
-          <FlatList
-            data={filteredTransactions}
-            renderItem={renderTransactionItem}
-            keyExtractor={(item) => item.id}
-            style={dashboardStyles.transactionsList}
-          />
-        </View>
-      </Animated.View>
+        {/* AI Suggestions Popover */}
+        {showAIPopover && (
+          <View style={dashboardStyles.aiPopover}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>AI Spending Insights</Text>
+            {aiSuggestions.map((suggestion, index) => (
+              <View key={index} style={dashboardStyles.aiSuggestionItem}>
+                <Text style={dashboardStyles.aiSuggestionText}>{suggestion}</Text>
+              </View>
+            ))}
+            <TouchableOpacity 
+              style={{ marginTop: 10, alignSelf: 'flex-end' }}
+              onPress={() => setShowAIPopover(false)}
+            >
+              <Text style={{ color: '#e74c3c' }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
 
       {/* Add Transaction Modal */}
       <Modal
-        visible={showTransactionModal}
-        animationType="slide"
+        animationType="none"
         transparent={true}
-        onRequestClose={() => setShowTransactionModal(false)}
+        visible={transactionModalVisible}
+        onRequestClose={() => setTransactionModalVisible(false)}
       >
         <View style={dashboardStyles.modalOverlay}>
-          <View
-            style={[
-              dashboardStyles.modalContent,
-              darkTheme && dashboardStyles.darkModalContent,
-            ]}
-          >
+          <View style={[
+            dashboardStyles.modalContent,
+            themeDark && dashboardStyles.darkModalContent
+          ]}>
             <View style={dashboardStyles.modalHeader}>
-              <Text
-                style={[
-                  dashboardStyles.modalTitle,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                Add New Transaction
-              </Text>
-              <TouchableOpacity onPress={() => setShowTransactionModal(false)}>
-                <Icon
-                  name="times"
-                  size={20}
-                  color={darkTheme ? "#b0b0b0" : "#666"}
-                />
+              <Text style={dashboardStyles.modalTitle}>Add New Entry</Text>
+              <TouchableOpacity onPress={() => setTransactionModalVisible(false)}>
+                <Icon name="times" size={20} color="#666" />
               </TouchableOpacity>
             </View>
 
             <ScrollView style={dashboardStyles.modalBody}>
-              <Text
-                style={[
-                  dashboardStyles.formLabel,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                Transaction Type
-              </Text>
-              {/* Additional form elements would go here */}
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Transaction Type</Text>
+                <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                  <TouchableOpacity 
+                    style={{
+                      flex: 1,
+                      padding: 12,
+                      backgroundColor: transactionType === 'income' ? '#e74c3c' : '#f5f5f5',
+                      borderTopLeftRadius: 8,
+                      borderBottomLeftRadius: 8,
+                      alignItems: 'center'
+                    }}
+                    onPress={() => setTransactionType('income')}
+                  >
+                    <Text style={{ color: transactionType === 'income' ? '#fff' : '#666' }}>
+                      Income
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={{
+                      flex: 1,
+                      padding: 12,
+                      backgroundColor: transactionType === 'expense' ? '#e74c3c' : '#f5f5f5',
+                      borderTopRightRadius: 8,
+                      borderBottomRightRadius: 8,
+                      alignItems: 'center'
+                    }}
+                    onPress={() => setTransactionType('expense')}
+                  >
+                    <Text style={{ color: transactionType === 'expense' ? '#fff' : '#666' }}>
+                      Expense
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Title</Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#e6e9ed',
+                    borderRadius: 8,
+                    padding: 12,
+                    marginTop: 8
+                  }}
+                  placeholder="Enter title"
+                />
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Amount</Text>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderColor: '#e6e9ed',
+                  borderRadius: 8,
+                  paddingLeft: 12,
+                  marginTop: 8
+                }}>
+                  <Text style={{ marginRight: 8 }}>$</Text>
+                  <TextInput
+                    style={{ flex: 1, paddingVertical: 12 }}
+                    placeholder="0.00"
+                    keyboardType="numeric"
+                  />
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Category</Text>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  borderWidth: 1,
+                  borderColor: '#e6e9ed',
+                  borderRadius: 8,
+                  padding: 12,
+                  marginTop: 8
+                }}>
+                  <Text>Food</Text>
+                  <Icon name="caret-down" size={16} color="#666" />
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Date</Text>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  borderWidth: 1,
+                  borderColor: '#e6e9ed',
+                  borderRadius: 8,
+                  padding: 12,
+                  marginTop: 8
+                }}>
+                  <Text>Select date</Text>
+                  <Icon name="calendar" size={16} color="#666" />
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Notes</Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#e6e9ed',
+                    borderRadius: 8,
+                    padding: 12,
+                    marginTop: 8,
+                    height: 100,
+                    textAlignVertical: 'top'
+                  }}
+                  placeholder="Add notes"
+                  multiline
+                />
+              </View>
+
+              <View style={{ 
+                flexDirection: 'row', 
+                justifyContent: 'flex-end',
+                marginTop: 16
+              }}>
+                <TouchableOpacity 
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    borderRadius: 8,
+                    marginRight: 16
+                  }}
+                  onPress={() => setTransactionModalVisible(false)}
+                >
+                  <Text style={{ color: '#666' }}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    borderRadius: 8,
+                    backgroundColor: '#e74c3c'
+                  }}
+                >
+                  <Text style={{ color: '#fff' }}>Save Transaction</Text>
+                </TouchableOpacity>
+              </View>
             </ScrollView>
           </View>
         </View>
@@ -586,46 +375,184 @@ const DashboardScreen = () => {
 
       {/* Edit Transaction Modal */}
       <Modal
-        visible={showEditModal}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setShowEditModal(false)}
+        visible={editModalVisible}
+        onRequestClose={() => setEditModalVisible(false)}
       >
         <View style={dashboardStyles.modalOverlay}>
-          <View
-            style={[
-              dashboardStyles.modalContent,
-              darkTheme && dashboardStyles.darkModalContent,
-            ]}
-          >
+          <View style={[
+            dashboardStyles.modalContent,
+            themeDark && dashboardStyles.darkModalContent
+          ]}>
             <View style={dashboardStyles.modalHeader}>
-              <Text
-                style={[
-                  dashboardStyles.modalTitle,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                Edit Transaction
-              </Text>
-              <TouchableOpacity onPress={() => setShowEditModal(false)}>
-                <Icon
-                  name="times"
-                  size={20}
-                  color={darkTheme ? "#b0b0b0" : "#666"}
-                />
+              <Text style={dashboardStyles.modalTitle}>Edit Transaction</Text>
+              <TouchableOpacity onPress={() => setEditModalVisible(false)}>
+                <Icon name="times" size={20} color="#666" />
               </TouchableOpacity>
             </View>
 
             <ScrollView style={dashboardStyles.modalBody}>
-              <Text
-                style={[
-                  dashboardStyles.formLabel,
-                  darkTheme && { color: "#e1e1e1" },
-                ]}
-              >
-                Transaction Details
-              </Text>
-              {/* Additional form elements would go here */}
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Transaction Type</Text>
+                <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                  <TouchableOpacity 
+                    style={{
+                      flex: 1,
+                      padding: 12,
+                      backgroundColor: editTransactionType === 'income' ? '#e74c3c' : '#f5f5f5',
+                      borderTopLeftRadius: 8,
+                      borderBottomLeftRadius: 8,
+                      alignItems: 'center'
+                    }}
+                    onPress={() => setEditTransactionType('income')}
+                  >
+                    <Text style={{ color: editTransactionType === 'income' ? '#fff' : '#666' }}>
+                      Income
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={{
+                      flex: 1,
+                      padding: 12,
+                      backgroundColor: editTransactionType === 'expense' ? '#e74c3c' : '#f5f5f5',
+                      borderTopRightRadius: 8,
+                      borderBottomRightRadius: 8,
+                      alignItems: 'center'
+                    }}
+                    onPress={() => setEditTransactionType('expense')}
+                  >
+                    <Text style={{ color: editTransactionType === 'expense' ? '#fff' : '#666' }}>
+                      Expense
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Title</Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#e6e9ed',
+                    borderRadius: 8,
+                    padding: 12,
+                    marginTop: 8
+                  }}
+                  placeholder="Enter title"
+                />
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Amount</Text>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderColor: '#e6e9ed',
+                  borderRadius: 8,
+                  paddingLeft: 12,
+                  marginTop: 8
+                }}>
+                  <Text style={{ marginRight: 8 }}>$</Text>
+                  <TextInput
+                    style={{ flex: 1, paddingVertical: 12 }}
+                    placeholder="0.00"
+                    keyboardType="numeric"
+                  />
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Category</Text>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  borderWidth: 1,
+                  borderColor: '#e6e9ed',
+                  borderRadius: 8,
+                  padding: 12,
+                  marginTop: 8
+                }}>
+                  <Text>Food</Text>
+                  <Icon name="caret-down" size={16} color="#666" />
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Date</Text>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  borderWidth: 1,
+                  borderColor: '#e6e9ed',
+                  borderRadius: 8,
+                  padding: 12,
+                  marginTop: 8
+                }}>
+                  <Text>Select date</Text>
+                  <Icon name="calendar" size={16} color="#666" />
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <Text style={dashboardStyles.formLabel}>Notes</Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#e6e9ed',
+                    borderRadius: 8,
+                    padding: 12,
+                    marginTop: 8,
+                    height: 100,
+                    textAlignVertical: 'top'
+                  }}
+                  placeholder="Add notes"
+                  multiline
+                />
+              </View>
+
+              <View style={{ 
+                flexDirection: 'row', 
+                justifyContent: 'space-between',
+                marginTop: 16
+              }}>
+                <TouchableOpacity 
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    borderRadius: 8,
+                    backgroundColor: '#ff4d4d'
+                  }}
+                >
+                  <Text style={{ color: '#fff' }}>Delete</Text>
+                </TouchableOpacity>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity 
+                    style={{
+                      paddingVertical: 12,
+                      paddingHorizontal: 24,
+                      borderRadius: 8,
+                      marginRight: 16
+                    }}
+                    onPress={() => setEditModalVisible(false)}
+                  >
+                    <Text style={{ color: '#666' }}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={{
+                      paddingVertical: 12,
+                      paddingHorizontal: 24,
+                      borderRadius: 8,
+                      backgroundColor: '#e74c3c'
+                    }}
+                  >
+                    <Text style={{ color: '#fff' }}>Save Changes</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </ScrollView>
           </View>
         </View>
@@ -634,4 +561,4 @@ const DashboardScreen = () => {
   );
 };
 
-export default DashboardScreen;
+export default Dashboard;

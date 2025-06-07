@@ -149,14 +149,17 @@ const dashboardStyles = StyleSheet.create({
   
   // Card styles
   overviewCards: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
     marginBottom: 24,
   },
   card: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 24,
-    marginRight: 16,
-    width: 300, // Fixed width for cards
+    flex: 1,
+    marginHorizontal: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -319,6 +322,50 @@ const dashboardStyles = StyleSheet.create({
     marginBottom: 4,
     fontWeight: '500',
   },
+
+  aiButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#e74c3c',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 100,
+  },
+  aiPopover: {
+    position: 'absolute',
+    bottom: 100,
+    right: 30,
+    width: 250,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 99,
+  },
+  aiSuggestionItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  aiSuggestionText: {
+    fontSize: 14,
+    color: '#333',
+  },
 });
+
+
 
 export default dashboardStyles;

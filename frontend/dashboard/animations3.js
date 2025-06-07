@@ -376,3 +376,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   init();
 });
+
+// Add event listener for the "Add Entry" button
+addTransactionBtn.addEventListener('click', () => {
+  // Set today's date as default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('transaction-date').value = today;
+  
+  // Show the modal
+  transactionModal.style.display = 'block';
+});
+
+// Close modal handlers
+closeModalBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    transactionModal.style.display = 'none';
+    editTransactionModal.style.display = 'none';
+  });
+});
+
+cancelTransactionBtn.addEventListener('click', () => {
+  transactionModal.style.display = 'none';
+});
+
+cancelEditBtn.addEventListener('click', () => {
+  editTransactionModal.style.display = 'none';
+});
